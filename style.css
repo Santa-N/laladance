@@ -382,9 +382,9 @@ ul { list-style: none; }
   letter-spacing: 0.05em;
   white-space: nowrap;
 }
-.hero-badge-1 { top: 15%; left: 5%; }
-.hero-badge-2 { bottom: 20%; left: 2%; }
-.hero-badge-3 { top: 10%; right: 5%; }
+.hero-badge-1 { top: 15%; right: 5%; left: auto; }
+.hero-badge-2 { top: 45%; right: -5%; left: auto; }
+.hero-badge-3 { top: 75%; right: 5%; left: auto; }
 
 .hero-scroll {
   position: absolute;
