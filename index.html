@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>라라댄스무용학원 | LaLa Barre &amp; Ballet Studio</title>
+  <meta name="description" content="부산 남구 대연동 라라댄스무용학원 - 발레, 현대무용 전문학원. 유아부터 성인까지 체계적인 커리큘럼. 입시 합격률 99%." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Noto+Sans+KR:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&family=Jua&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- NAV -->
+  <header class="navbar" id="navbar">
+    <div class="nav-inner">
+      <a href="#home" class="nav-logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 200 200" width="60" height="60" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Classy Gold Ring instead of Insta Rainbow -->
+            <circle cx="100" cy="100" r="95" fill="#ffffff" stroke="#b89c6b" stroke-width="4"/>
+            
+            <!-- Inner Dancer Silhouette (Brown: #825b3a) -->
+            <g fill="#825b3a" stroke="#825b3a" stroke-linecap="round">
+              <!-- Diagonal Leg Line -->
+              <path d="M 45 65 L 140 120" stroke-width="6"/>
+              <path d="M 120 108 L 165 135" stroke-width="3"/>
+              <!-- Tutu/Skirt Detail -->
+              <path d="M 95 95 C 105 110 120 115 125 105 C 115 100 105 92 95 95 Z" stroke="none"/>
+              <!-- Body Arched -->
+              <path d="M 103 98 C 110 80 120 65 116 55 C 112 60 102 75 95 92 Z" stroke="none"/>
+              <path d="M 115 57 C 120 65 125 75 122 85" stroke-width="4" stroke="none"/>
+              <!-- Arms Sweeping Left -->
+              <path d="M 116 55 Q 95 45 78 40" stroke-width="2.5" fill="none"/>
+              <path d="M 115 55 Q 105 40 100 22" stroke-width="2" fill="none"/>
+              <!-- Head -->
+              <ellipse cx="122" cy="48" rx="7" ry="5.5" transform="rotate(-30 122 48)" stroke="none"/>
+            </g>
+            
+            <!-- Text inside the logo -->
+            <text x="100" y="148" font-family="'Cormorant Garamond', serif" font-size="28" font-weight="600" fill="#825b3a" text-anchor="middle" letter-spacing="0.1em">L A L A</text>
+            <text x="100" y="165" font-family="'DM Sans', sans-serif" font-size="11" font-weight="500" fill="#825b3a" text-anchor="middle" letter-spacing="0.05em">DANCE STUDIO</text>
+          </svg>
+        </div>
+        <div class="logo-text">
+          <span class="logo-main custom-kr">라라댄스&amp;무용학원</span>
+          <span class="logo-sub custom-en">L a L a &nbsp; D a n c e &nbsp; S t u d i o</span>
+        </div>
+      </a>
+      <button class="hamburger" id="hamburger" aria-label="메뉴 열기">
+        <span></span><span></span><span></span>
+      </button>
+      <nav class="nav-menu" id="navMenu">
+        <a href="#about">학원소개</a>
+        <a href="#classes">수업안내</a>
+        <a href="#schedule">시간표</a>
+        <a href="#pricing">수강료</a>
+        <a href="#news">소식</a>
+        <a href="#contact" class="nav-cta">오시는길</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <div class="hero-bg-shapes">
+      <div class="shape shape-1"></div>
+      <div class="shape shape-2"></div>
+      <div class="shape shape-3"></div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-eyebrow">
+        <span class="eyebrow-line"></span>
+        <span>BUSAN · DAEYEON-DONG · EST. 2017</span>
+        <span class="eyebrow-line"></span>
+      </div>
+      <h1 class="hero-title">
+        <em>LaLa</em>
+        <span>Barre &amp; Ballet</span>
+        <span class="hero-title-kr">라라댄스무용학원</span>
+      </h1>
+      <p class="hero-motto">
+        춤을 통해 세상을 바라보는 눈이 바뀌고<br/>
+        아름다운 사람으로 성장할 수 있기를 바랍니다.
+      </p>
+      <div class="hero-actions">
+        <a href="#classes" class="btn btn-dark">수업 알아보기 <span>→</span></a>
+        <a href="tel:0516114607" class="btn btn-outline-dark">📞 051-611-4607</a>
+      </div>
+      <div class="hero-tags">
+        <span>🩰 발레</span>
+        <span>💃 현대무용</span>
+        <span>🏆 무용입시</span>
+        <span>🌸 성인발레</span>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-circle-outer">
+        <div class="hero-circle-inner">
+          <svg viewBox="0 0 340 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Large elegant ballet silhouette -->
+            <g opacity="0.18" fill="#b89c6b">
+              <circle cx="170" cy="65" r="35"/>
+              <ellipse cx="168" cy="170" rx="28" ry="65" transform="rotate(-3 168 170)"/>
+              <!-- tutu -->
+              <ellipse cx="168" cy="230" rx="80" ry="28" opacity="0.7"/>
+              <path d="M145 235 Q120 270 100 320 Q90 360 95 400" stroke="#b89c6b" stroke-width="14" stroke-linecap="round" fill="none"/>
+              <path d="M190 238 Q230 255 270 240" stroke="#b89c6b" stroke-width="14" stroke-linecap="round" fill="none"/>
+              <!-- arms -->
+              <path d="M148 120 Q100 90 65 70" stroke="#b89c6b" stroke-width="10" stroke-linecap="round" fill="none"/>
+              <path d="M188 118 Q235 95 272 78" stroke="#b89c6b" stroke-width="10" stroke-linecap="round" fill="none"/>
+            </g>
+            <!-- decorative circles -->
+            <circle cx="170" cy="250" r="160" stroke="#e8c4a0" stroke-width="0.5" stroke-dasharray="6 8" opacity="0.4"/>
+            <circle cx="170" cy="250" r="140" stroke="#d4b08a" stroke-width="0.3" opacity="0.2"/>
+          </svg>
+        </div>
+      </div>
+      <div class="hero-badge hero-badge-1">
+        <strong>99%</strong>
+        <span>입시 합격률</span>
+      </div>
+      <div class="hero-badge hero-badge-2">
+        <strong>2017</strong>
+        <span>설립년도</span>
+      </div>
+      <div class="hero-badge hero-badge-3">
+        <strong>65명</strong>
+        <span>정원</span>
+      </div>
+    </div>
+    <div class="hero-scroll">
+      <div class="scroll-mouse"><div class="scroll-wheel"></div></div>
+      <span>scroll</span>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section class="stats">
+    <div class="stats-inner">
+      <div class="stat">
+        <strong class="count" data-target="99">0</strong><sup>%</sup>
+        <p>무용입시 합격률</p>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <strong class="count" data-target="7">0</strong><sup>년+</sup>
+        <p>전문 운영 경력</p>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <strong class="count" data-target="65">0</strong><sup>명</sup>
+        <p>수용 정원</p>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <strong class="count" data-target="6">0</strong><sup>개</sup>
+        <p>전문 과정</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="about" id="about">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-image-col">
+          <div class="about-img-frame">
+            <div class="about-img-bg">
+              <svg viewBox="0 0 400 480" fill="none" xmlns="http://www.w3.org/2000/svg" class="about-svg">
+                <!-- Studio illustration -->
+                <rect width="400" height="480" rx="20" fill="#fdf9f5"/>
+                <!-- Barre -->
+                <rect x="30" y="240" width="340" height="6" rx="3" fill="#d4b896" opacity="0.6"/>
+                <rect x="60" y="200" width="8" height="46" rx="4" fill="#d4b896" opacity="0.4"/>
+                <rect x="332" y="200" width="8" height="46" rx="4" fill="#d4b896" opacity="0.4"/>
+                <!-- Mirror reflection lines -->
+                <line x1="200" y1="30" x2="200" y2="240" stroke="#e8ddd4" stroke-width="1" stroke-dasharray="4 6"/>
+                <line x1="100" y1="30" x2="100" y2="240" stroke="#e8ddd4" stroke-width="0.5" stroke-dasharray="2 8" opacity="0.5"/>
+                <line x1="300" y1="30" x2="300" y2="240" stroke="#e8ddd4" stroke-width="0.5" stroke-dasharray="2 8" opacity="0.5"/>
+                <!-- Floor -->
+                <rect x="0" y="400" width="400" height="80" rx="0" fill="#f0e8de" opacity="0.5"/>
+                <!-- Dancer silhouette center -->
+                <g opacity="0.22" fill="#b89c6b">
+                  <circle cx="200" cy="90" r="22"/>
+                  <ellipse cx="198" cy="155" rx="17" ry="42" transform="rotate(-2 198 155)"/>
+                  <ellipse cx="198" cy="195" rx="52" ry="18" opacity="0.6"/>
+                  <path d="M182 200 Q165 235 155 280" stroke="#b89c6b" stroke-width="10" stroke-linecap="round" fill="none"/>
+                  <path d="M214 202 Q248 218 272 208" stroke="#b89c6b" stroke-width="10" stroke-linecap="round" fill="none"/>
+                  <path d="M184 116 Q150 100 126 88" stroke="#b89c6b" stroke-width="7" stroke-linecap="round" fill="none"/>
+                  <path d="M216 114 Q252 100 278 88" stroke="#b89c6b" stroke-width="7" stroke-linecap="round" fill="none"/>
+                </g>
+                <!-- Studio text watermark -->
+                <text x="200" y="440" text-anchor="middle" font-family="serif" font-size="14" fill="#c4aa88" opacity="0.5" letter-spacing="6">LaLa DANCE STUDIO</text>
+              </svg>
+            </div>
+            <div class="about-cert">
+              <div class="cert-line">남부교육지원청 인가</div>
+              <div class="cert-num">제 4567호</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="about-text-col">
+          <div class="section-eyebrow">ABOUT US</div>
+          <h2 class="section-heading">학원 소개</h2>
+          <div class="director-tag">
+            <span class="dir-label">원장</span>
+            <span class="dir-name">허유라</span>
+          </div>
+          <blockquote class="about-quote">
+            "춤을 통해 세상을 바라보는 눈이 바뀌고,<br/>
+            아름다운 사람으로 성장할 수 있기를 바랍니다."
+          </blockquote>
+          <p class="about-desc">
+            라라댄스무용학원은 2017년 10월 부산 남구 대연동에 설립된 발레·현대무용 전문학원입니다. 유아부터 입시생, 성인까지 각 연령과 수준에 맞는 체계적인 커리큘럼을 통해 <strong>아이들의 잠재적인 재능과 올바른 자세, 유연성, 창의성</strong>을 이끌어냅니다.
+          </p>
+          <div class="about-highlights">
+            <div class="highlight-item">
+              <div class="hi-icon">🏆</div>
+              <div class="hi-text">
+                <strong>입시 합격률 99%</strong>
+                <p>중·고·대학교 무용 입시 전문 지도</p>
+              </div>
+            </div>
+            <div class="highlight-item">
+              <div class="hi-icon">👨‍🏫</div>
+              <div class="hi-text">
+                <strong>특별 강사 초청 수업</strong>
+                <p>김세용(발레), 이용진(현대무용) 등 전문가 특강</p>
+              </div>
+            </div>
+            <div class="highlight-item">
+              <div class="hi-icon">✨</div>
+              <div class="hi-text">
+                <strong>정기 공연 &amp; 대회 참가</strong>
+                <p>제10회 전국 무용 예술제 다수 수상</p>
+              </div>
+            </div>
+            <div class="highlight-item">
+              <div class="hi-icon">🎓</div>
+              <div class="hi-text">
+                <strong>예술고등학교 합격</strong>
+                <p>고양예술고등학교 등 명문 예고 합격 배출</p>
+              </div>
+            </div>
+          </div>
+          <div class="about-info-row">
+            <div class="ai-box">
+              <span>설립일</span>
+              <strong>2017. 10. 16</strong>
+            </div>
+            <div class="ai-box">
+              <span>수용 정원</span>
+              <strong>65명</strong>
+            </div>
+            <div class="ai-box">
+              <span>등록번호</span>
+              <strong>제 4567호</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CLASSES -->
+  <section class="classes" id="classes">
+    <div class="container">
+      <div class="section-eyebrow">CURRICULUM</div>
+      <h2 class="section-heading">수업 안내</h2>
+      <p class="section-sub">유아 발레부터 무용 입시반, 성인 발레까지 전문 과정</p>
+
+      <div class="class-tabs" role="tablist">
+        <button class="ctab active" data-filter="all" role="tab">전체</button>
+        <button class="ctab" data-filter="kids" role="tab">어린이</button>
+        <button class="ctab" data-filter="teens" role="tab">입시반</button>
+        <button class="ctab" data-filter="adult" role="tab">성인</button>
+      </div>
+
+      <div class="class-grid">
+
+        <div class="ccard" data-cat="kids">
+          <div class="ccard-top pink">
+            <span class="ccard-emoji">🩰</span>
+            <span class="ccard-badge">유아</span>
+          </div>
+          <div class="ccard-body">
+            <h3>유아 발레</h3>
+            <p class="ccard-age">5세 ~ 7세</p>
+            <p class="ccard-desc">어린 나이부터 발레 기초를 자연스럽게 익히며 바른 자세, 유연성, 음악적 감수성을 키웁니다. 토요일 전용 과정입니다.</p>
+            <ul class="ccard-schedule">
+              <li><span>5~6세</span> 토요일 10:30 – 11:10</li>
+              <li><span>7세</span> 토요일 11:20 – 12:00</li>
+            </ul>
+            <div class="ccard-price">월 <strong>80,000원</strong> <em>(주 1회)</em></div>
+          </div>
+        </div>
+
+        <div class="ccard" data-cat="kids">
+          <div class="ccard-top lavender">
+            <span class="ccard-emoji">🩰</span>
+            <span class="ccard-badge">초등</span>
+          </div>
+          <div class="ccard-body">
+            <h3>초등 발레 기초</h3>
+            <p class="ccard-age">초등학생 전학년</p>
+            <p class="ccard-desc">기초 테크닉과 표현력을 함께 키우는 초등생 전용 발레 기초반. 꾸준한 반복 훈련으로 올바른 기본기를 다집니다.</p>
+            <ul class="ccard-schedule">
+              <li><span>A반</span> 월·수·금 15:00</li>
+              <li><span>B반</span> 화·목 16:00</li>
+            </ul>
+            <div class="ccard-price">월 <strong>140,000원</strong> <em>(주 3회)</em></div>
+          </div>
+        </div>
+
+        <div class="ccard" data-cat="kids">
+          <div class="ccard-top sky">
+            <span class="ccard-emoji">🩰</span>
+            <span class="ccard-badge">초등</span>
+          </div>
+          <div class="ccard-body">
+            <h3>초등 발레 중급</h3>
+            <p class="ccard-age">기초 수료 후</p>
+            <p class="ccard-desc">기초반 수료 후 심화 동작과 표현력 강화. 단계적인 난이도 상승으로 실력을 향상시킵니다.</p>
+            <ul class="ccard-schedule">
+              <li><span>A반</span> 월·수·금 16:00</li>
+              <li><span>B반</span> 화·목 18:00</li>
+            </ul>
+            <div class="ccard-price">월 <strong>150,000원</strong> <em>(주 3회)</em></div>
+          </div>
+        </div>
+
+        <div class="ccard" data-cat="kids">
+          <div class="ccard-top mint">
+            <span class="ccard-emoji">💃</span>
+            <span class="ccard-badge">초등</span>
+          </div>
+          <div class="ccard-body">
+            <h3>초등 현대무용</h3>
+            <p class="ccard-age">초등학생 전학년</p>
+            <p class="ccard-desc">자유로운 표현과 창의성을 기르는 현대무용. 몸의 언어로 감정을 표현하며 예술적 감각을 키웁니다.</p>
+            <ul class="ccard-schedule">
+              <li><span>기초</span> 월·수·금 17:00</li>
+            </ul>
+            <div class="ccard-price">월 <strong>150,000원</strong> <em>(주 3회)</em></div>
+          </div>
+        </div>
+
+        <div class="ccard featured" data-cat="kids teens">
+          <div class="ccard-top gold">
+            <span class="ccard-emoji">⭐</span>
+            <span class="ccard-badge">영재</span>
+          </div>
+          <div class="ccard-body">
+            <h3>영재반</h3>
+            <p class="ccard-age">선발 과정</p>
+            <p class="ccard-desc">발레·현대무용 뛰어난 자질의 학생들을 위한 집중 심화 과정. 높은 수준의 기술과 표현력을 개발합니다.</p>
+            <ul class="ccard-schedule">
+              <li><span>발레 영재</span> 주 3회</li>
+              <li><span>현대 영재</span> 주 3회</li>
+            </ul>
+            <div class="ccard-price">월 <strong>280,000원</strong> <em>(주 3회)</em></div>
+          </div>
+        </div>
+
+        <div class="ccard featured-main" data-cat="teens">
+          <div class="ccard-ribbon">입시 전문</div>
+          <div class="ccard-top rose">
+            <span class="ccard-emoji">🏆</span>
+            <span class="ccard-badge">입시</span>
+          </div>
+          <div class="ccard-body">
+            <h3>무용 입시반</h3>
+            <p class="ccard-age">중·고등학생 / 대학 입시 준비생</p>
+            <p class="ccard-desc">입시 합격률 99%! 현대무용과 발레를 병행하며 대학·예고 입시에 최적화된 커리큘럼을 제공합니다. 고양예술고 합격, 전국무용예술제 수상 실적 보유.</p>
+            <ul class="ccard-schedule">
+              <li><span>현대무용</span> 월·수·금 19:00 – 20:30</li>
+              <li><span>발레</span> 화·목 19:00 – 20:00</li>
+              <li><span>집중반</span> 주 5회</li>
+            </ul>
+            <div class="ccard-price">월 <strong>600,000원</strong> <em>(주 5회)</em></div>
+          </div>
+        </div>
+
+        <div class="ccard" data-cat="adult">
+          <div class="ccard-top blush">
+            <span class="ccard-emoji">🌸</span>
+            <span class="ccard-badge">성인</span>
+          </div>
+          <div class="ccard-body">
+            <h3>성인 발레 오전반</h3>
+            <p class="ccard-age">성인 누구나</p>
+            <p class="ccard-desc">오전 시간 여유로운 분들을 위한 성인 발레. 운동 효과와 예술적 즐거움을 동시에 경험하세요.</p>
+            <ul class="ccard-schedule">
+              <li><span>오전반</span> 월·금 10:00 – 11:30</li>
+            </ul>
+            <div class="ccard-price">월 <strong>150,000원</strong> <em>(주 2회)</em></div>
+          </div>
+        </div>
+
+        <div class="ccard" data-cat="adult">
+          <div class="ccard-top blush">
+            <span class="ccard-emoji">🌸</span>
+            <span class="ccard-badge">성인</span>
+          </div>
+          <div class="ccard-body">
+            <h3>성인 발레 완전초급</h3>
+            <p class="ccard-age">발레 처음 시작하는 분</p>
+            <p class="ccard-desc">발레가 처음인 분들을 위한 가장 기초부터 시작하는 과정. 친절하고 체계적인 지도로 누구나 시작할 수 있습니다.</p>
+            <ul class="ccard-schedule">
+              <li><span>완전초급</span> 화·목 19:00 – 20:00</li>
+            </ul>
+            <div class="ccard-price">월 <strong>120,000원</strong> <em>(주 2회)</em></div>
+          </div>
+        </div>
+
+        <div class="ccard" data-cat="adult">
+          <div class="ccard-top blush">
+            <span class="ccard-emoji">🌸</span>
+            <span class="ccard-badge">성인</span>
+          </div>
+          <div class="ccard-body">
+            <h3>성인 발레 기초</h3>
+            <p class="ccard-age">성인 초급자</p>
+            <p class="ccard-desc">기초 테크닉과 발레 감각을 익히는 과정. 아름다운 자세와 유연성을 함께 키워갑니다.</p>
+            <ul class="ccard-schedule">
+              <li><span>기초</span> 월·수 19:00 – 20:00</li>
+            </ul>
+            <div class="ccard-price">월 <strong>120,000원</strong> <em>(주 2회)</em></div>
+          </div>
+        </div>
+
+        <div class="ccard" data-cat="adult">
+          <div class="ccard-top blush">
+            <span class="ccard-emoji">🌸</span>
+            <span class="ccard-badge">성인</span>
+          </div>
+          <div class="ccard-body">
+            <h3>성인 발레 중·상급</h3>
+            <p class="ccard-age">중급 이상</p>
+            <p class="ccard-desc">심화 테크닉과 표현력을 향상시키는 중상급 과정. 포인트슈즈 착용 및 바리에이션 등 고급 동작을 배웁니다.</p>
+            <ul class="ccard-schedule">
+              <li><span>중상급</span> 화·목 20:00 – 21:00</li>
+              <li><span>중급</span> 화·목 21:00 – 22:00</li>
+            </ul>
+            <div class="ccard-price">별도 <strong>문의</strong></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- SCHEDULE -->
+  <section class="schedule" id="schedule">
+    <div class="container">
+      <div class="section-eyebrow">TIMETABLE</div>
+      <h2 class="section-heading">주간 시간표</h2>
+      <div class="schedule-scroll">
+        <table class="sch-table">
+          <thead>
+            <tr>
+              <th class="sch-time-head">시간</th>
+              <th>월</th>
+              <th>화</th>
+              <th>수</th>
+              <th>목</th>
+              <th>금</th>
+              <th>토</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="sch-time">10:00</td>
+              <td class="s-adult">성인발레<br/><small>오전반</small></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td class="s-adult">성인발레<br/><small>오전반</small></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="sch-time">10:30</td>
+              <td></td><td></td><td></td><td></td><td></td>
+              <td class="s-kids">유아발레<br/><small>5~6세</small></td>
+            </tr>
+            <tr>
+              <td class="sch-time">11:20</td>
+              <td></td><td></td><td></td><td></td><td></td>
+              <td class="s-kids">유아발레<br/><small>7세</small></td>
+            </tr>
+            <tr>
+              <td class="sch-time">15:00</td>
+              <td class="s-elem">초등발레<br/><small>기초</small></td>
+              <td></td>
+              <td class="s-elem">초등발레<br/><small>기초</small></td>
+              <td></td>
+              <td class="s-elem">초등발레<br/><small>기초</small></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="sch-time">16:00</td>
+              <td class="s-elem">초등발레<br/><small>중급</small></td>
+              <td class="s-elem">초등발레<br/><small>기초</small></td>
+              <td class="s-elem">초등발레<br/><small>중급</small></td>
+              <td class="s-elem">초등발레<br/><small>기초</small></td>
+              <td class="s-elem">초등발레<br/><small>중급</small></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="sch-time">17:00</td>
+              <td class="s-modern">현대무용<br/><small>기초</small></td>
+              <td></td>
+              <td class="s-modern">현대무용<br/><small>기초</small></td>
+              <td></td>
+              <td class="s-modern">현대무용<br/><small>기초</small></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="sch-time">18:00</td>
+              <td></td>
+              <td class="s-elem">초등발레<br/><small>중급</small></td>
+              <td></td>
+              <td class="s-elem">초등발레<br/><small>중급</small></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="sch-time">19:00</td>
+              <td class="s-adult">성인발레<br/><small>기초</small></td>
+              <td class="s-entrance">입시발레</td>
+              <td class="s-adult">성인발레<br/><small>기초</small></td>
+              <td class="s-entrance">입시발레</td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="sch-time">19:00~</td>
+              <td class="s-entrance">입시현대</td>
+              <td class="s-adult">성인발레<br/><small>완전초급</small></td>
+              <td class="s-entrance">입시현대</td>
+              <td class="s-adult">성인발레<br/><small>완전초급</small></td>
+              <td class="s-entrance">입시현대</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="sch-time">20:00</td>
+              <td></td>
+              <td class="s-adult">성인발레<br/><small>중상급</small></td>
+              <td></td>
+              <td class="s-adult">성인발레<br/><small>중상급</small></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="sch-time">21:00</td>
+              <td></td>
+              <td class="s-adult">성인발레<br/><small>중급</small></td>
+              <td></td>
+              <td class="s-adult">성인발레<br/><small>중급</small></td>
+              <td></td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="sch-legend">
+        <span class="leg kids">유아 발레</span>
+        <span class="leg elem">초등 발레</span>
+        <span class="leg modern">현대무용</span>
+        <span class="leg entrance">입시반</span>
+        <span class="leg adult">성인 발레</span>
+      </div>
+      <p class="sch-note">※ 시간표는 학원 사정에 따라 변경될 수 있습니다. 자세한 내용은 학원으로 문의해 주세요.</p>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section class="pricing" id="pricing">
+    <div class="pricing-bg">
+      <div class="container">
+        <div class="section-eyebrow">TUITION</div>
+        <h2 class="section-heading">수강료 안내</h2>
+        <p class="section-sub">※ 수강료는 학원 사정에 따라 변경될 수 있으므로 문의 후 확인 바랍니다.</p>
+        <div class="price-grid">
+          <div class="pcard">
+            <div class="pcard-icon">🩰</div>
+            <h3>유아 발레</h3>
+            <p class="pcard-sub">5~7세 / 토요일</p>
+            <div class="pcard-price"><strong>80,000</strong>원</div>
+            <p class="pcard-freq">주 1회 / 월 기준</p>
+          </div>
+          <div class="pcard">
+            <div class="pcard-icon">🩰</div>
+            <h3>초등 발레 기초</h3>
+            <p class="pcard-sub">초등 전학년</p>
+            <div class="pcard-price"><strong>140,000</strong>원</div>
+            <p class="pcard-freq">주 3회 / 월 기준</p>
+          </div>
+          <div class="pcard">
+            <div class="pcard-icon">🩰</div>
+            <h3>초등 발레 중급</h3>
+            <p class="pcard-sub">기초 수료 후</p>
+            <div class="pcard-price"><strong>150,000</strong>원</div>
+            <p class="pcard-freq">주 3회 / 월 기준</p>
+          </div>
+          <div class="pcard">
+            <div class="pcard-icon">💃</div>
+            <h3>초등 현대무용</h3>
+            <p class="pcard-sub">초등 전학년</p>
+            <div class="pcard-price"><strong>150,000</strong>원</div>
+            <p class="pcard-freq">주 3회 / 월 기준</p>
+          </div>
+          <div class="pcard">
+            <div class="pcard-icon">🌸</div>
+            <h3>성인 발레 오전반</h3>
+            <p class="pcard-sub">성인 누구나</p>
+            <div class="pcard-price"><strong>150,000</strong>원</div>
+            <p class="pcard-freq">주 2회 / 월 기준</p>
+          </div>
+          <div class="pcard">
+            <div class="pcard-icon">🌸</div>
+            <h3>성인 발레 완전초급/기초</h3>
+            <p class="pcard-sub">저녁 클래스</p>
+            <div class="pcard-price"><strong>120,000</strong>원</div>
+            <p class="pcard-freq">주 2회 / 월 기준</p>
+          </div>
+          <div class="pcard pcard-gold">
+            <div class="pcard-icon">⭐</div>
+            <h3>영재반</h3>
+            <p class="pcard-sub">선발 과정</p>
+            <div class="pcard-price"><strong>280,000</strong>원</div>
+            <p class="pcard-freq">주 3회 / 월 기준</p>
+          </div>
+          <div class="pcard pcard-highlight">
+            <div class="pcard-ribbon">합격률 99%</div>
+            <div class="pcard-icon">🏆</div>
+            <h3>무용 입시 전문반</h3>
+            <p class="pcard-sub">발레 + 현대무용</p>
+            <div class="pcard-price"><strong>600,000</strong>원</div>
+            <p class="pcard-freq">주 5회 / 월 기준</p>
+          </div>
+        </div>
+        <div class="price-cta">
+          <p>수강 문의 및 체험 수업 신청</p>
+          <a href="tel:0516114607" class="btn btn-dark">📞 051-611-4607</a>
+          <span class="price-cta-or">또는</span>
+          <a href="#contact" class="btn btn-outline-dark">카카오톡 문의 (yoratalk)</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEWS / ACHIEVEMENTS -->
+  <section class="news" id="news">
+    <div class="container">
+      <div class="section-eyebrow">ACHIEVEMENTS</div>
+      <h2 class="section-heading">소식 &amp; 수상 내역</h2>
+      <div class="news-grid">
+        <div class="news-card">
+          <div class="news-date">2024. 02</div>
+          <div class="nc-icon">🎓</div>
+          <h4>교원임용 합격</h4>
+          <p>라라댄스 출신 선생님이 2024년 체육교사 임용시험(무용 전공) 합격!</p>
+        </div>
+        <div class="news-card">
+          <div class="news-date">2024</div>
+          <div class="nc-icon">🏆</div>
+          <h4>제10회 전국 무용 예술제 수상</h4>
+          <p>제10회 전국 무용 예술제에서 다수 학생이 수상하는 쾌거를 이뤘습니다.</p>
+        </div>
+        <div class="news-card">
+          <div class="news-date">2024</div>
+          <div class="nc-icon">🏫</div>
+          <h4>고양예술고등학교 합격</h4>
+          <p>라라댄스 입시반 학생이 명문 고양예술고등학교 무용과에 최종 합격했습니다.</p>
+        </div>
+        <div class="news-card">
+          <div class="news-date">정기</div>
+          <div class="nc-icon">🎤</div>
+          <h4>전문 강사 특별 강의</h4>
+          <p>김세용(발레), 이용진(현대무용) 등 유명 전문가 초청 특별 강좌를 정기적으로 운영합니다.</p>
+        </div>
+        <div class="news-card">
+          <div class="news-date">매년</div>
+          <div class="nc-icon">🎭</div>
+          <h4>정기 공연</h4>
+          <p>매년 정기 공연을 통해 학생들이 무대 경험을 쌓고 성장하는 기회를 제공합니다.</p>
+        </div>
+        <div class="news-card">
+          <div class="news-date">상시</div>
+          <div class="nc-icon">💯</div>
+          <h4>토요 유아반 재등록률 100%</h4>
+          <p>토요 유아발레반은 만족도가 높아 거의 100%에 달하는 재등록률을 자랑합니다.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="contact" id="contact">
+    <div class="container">
+      <div class="contact-grid">
+        <div class="contact-left">
+          <div class="section-eyebrow">LOCATION &amp; CONTACT</div>
+          <h2 class="section-heading">오시는 길</h2>
+          <div class="contact-items">
+            <div class="ci">
+              <div class="ci-icon">📍</div>
+              <div>
+                <strong>주소</strong>
+                <p>부산광역시 남구 수영로 222, 3층<br/><small>(대연동, 지하철 2호선 대연역 근처)</small></p>
+              </div>
+            </div>
+            <div class="ci">
+              <div class="ci-icon">📞</div>
+              <div>
+                <strong>전화 문의</strong>
+                <p><a href="tel:0516114607">051-611-4607</a></p>
+              </div>
+            </div>
+            <div class="ci">
+              <div class="ci-icon">💬</div>
+              <div>
+                <strong>카카오톡 ID</strong>
+                <p>yoratalk</p>
+              </div>
+            </div>
+            <div class="ci">
+              <div class="ci-icon">📸</div>
+              <div>
+                <strong>인스타그램</strong>
+                <p><a href="https://www.instagram.com/laladance.studio" target="_blank" rel="noopener">@laladance.studio</a></p>
+              </div>
+            </div>
+            <div class="ci">
+              <div class="ci-icon">🕐</div>
+              <div>
+                <strong>운영 시간</strong>
+                <p>평일 10:00 – 22:00<br/>토요일 10:00 – 13:00<br/>일요일·공휴일 휴무</p>
+              </div>
+            </div>
+          </div>
+          <div class="contact-btns">
+            <a href="tel:0516114607" class="btn btn-dark">📞 전화 문의</a>
+            <a href="https://www.instagram.com/laladance.studio" target="_blank" rel="noopener" class="btn btn-outline-dark">📸 인스타그램</a>
+          </div>
+        </div>
+        <div class="contact-right">
+          <div class="map-box">
+            <div class="map-grid-overlay"></div>
+            <div class="map-card">
+              <div class="map-pin-wrap">
+                <div class="mpin"></div>
+                <div class="mpin-ring"></div>
+                <div class="mpin-ring2"></div>
+              </div>
+              <div class="map-info">
+                <strong>라라댄스무용학원</strong>
+                <span>LaLa Barre &amp; Ballet Studio</span>
+                <p>부산 남구 수영로 222, 3층<br/>📮 대연동</p>
+                <a href="https://map.naver.com/p/search/부산+남구+수영로+222+라라댄스" target="_blank" rel="noopener" class="map-btn">네이버 지도로 보기 →</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-top">
+      <div class="ft-logo">
+        <div class="ft-logo-icon">
+          <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="20" cy="20" r="19" stroke="#b89c6b" stroke-width="1"/>
+            <circle cx="20" cy="10" r="4" fill="#b89c6b"/>
+            <path d="M20 14 Q18 20 17 25" stroke="#b89c6b" stroke-width="2" stroke-linecap="round" fill="none"/>
+            <path d="M15 17 Q10 14 7 12" stroke="#b89c6b" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+            <path d="M25 17 Q30 14 33 12" stroke="#b89c6b" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+            <path d="M17 26 Q20 29 30 26" stroke="#b89c6b" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          </svg>
+        </div>
+        <div>
+          <span class="ft-main">라라댄스무용학원</span>
+          <span class="ft-sub">LaLa Barre &amp; Ballet Studio</span>
+        </div>
+      </div>
+      <div class="ft-info">
+        <p>📍 부산광역시 남구 수영로 222, 3층 (대연동)</p>
+        <p>📞 051-611-4607 &nbsp;|&nbsp; 💬 카카오톡: yoratalk</p>
+        <p>📸 Instagram: @laladance.studio</p>
+        <p>🏛 부산광역시 남부교육지원청 제 4567호 &nbsp;|&nbsp; 원장: 허유라</p>
+      </div>
+      <div class="ft-sns">
+        <a href="https://www.instagram.com/laladance.studio" target="_blank" rel="noopener" aria-label="Instagram">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+        </a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2024 라라댄스무용학원. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>
