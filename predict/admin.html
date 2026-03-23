@@ -74,6 +74,22 @@
     .notice-box { background:linear-gradient(135deg,#fdf8ec,#faf2dd); border:1px solid #f0dfa0; border-radius:var(--radius-sm); padding:12px 16px; font-size:.82rem; color:#6a5000; margin-bottom:20px; }
 
     @media(max-width:600px) { .admin-wrap{padding:20px 16px} .code-hint{padding-left:0} .code-row{flex-direction:column;align-items:flex-start} }
+
+    /* 매뉴얼 */
+    .manual-wrap { display:flex; flex-direction:column; gap:28px; }
+    .manual-section { background:#fff; border:1px solid var(--border-light); border-radius:var(--radius); padding:28px 32px; }
+    .manual-role-badge { display:inline-block; padding:4px 14px; border-radius:20px; font-size:.78rem; font-weight:700; letter-spacing:.04em; margin-bottom:10px; }
+    .badge-admin   { background:#e8d5f0; color:#6a2d8f; }
+    .badge-teacher { background:#d5e8f0; color:#1a6080; }
+    .badge-student { background:#e8f0d5; color:#3a6020; }
+    .manual-title { font-family:'Cormorant Garamond',serif; font-size:1.2rem; font-weight:600; color:var(--text-dark); margin:0 0 18px; }
+    .manual-block { display:flex; flex-direction:column; gap:14px; }
+    .manual-item { display:flex; gap:14px; align-items:flex-start; }
+    .manual-icon { font-size:1.3rem; flex-shrink:0; margin-top:1px; }
+    .manual-item strong { display:block; font-size:.92rem; color:var(--text-dark); margin-bottom:3px; }
+    .manual-item p { font-size:.84rem; color:var(--text-mid); margin:0; line-height:1.6; }
+    .manual-item code { background:var(--ivory); border:1px solid var(--border-light); border-radius:4px; padding:1px 6px; font-size:.82rem; color:var(--gold-dark); }
+    @media(max-width:600px) { .manual-section{padding:20px 16px} }
   </style>
 </head>
 <body>
@@ -122,6 +138,7 @@
         <button class="admin-tab" data-tab="codes">학원코드 설정</button>
         <button class="admin-tab" data-tab="news">소식 관리</button>
         <button class="admin-tab" data-tab="classinfo">수업안내 관리</button>
+        <button class="admin-tab" data-tab="manual">이용 안내</button>
       </div>
 
       <!-- 사용자 관리 탭 -->
@@ -257,6 +274,61 @@
           <button class="btn-save-codes" id="saveCodesBtn">코드 저장</button>
         </div>
       </div>
+
+      <!-- 이용 안내 탭 -->
+      <div id="tabManual" style="display:none">
+        <div class="manual-wrap">
+
+          <div class="manual-section">
+            <div class="manual-role-badge badge-admin">👑 관리자</div>
+            <h3 class="manual-title">관리자 기능 안내</h3>
+            <div class="manual-block">
+              <div class="manual-item"><span class="manual-icon">🔑</span><div><strong>로그인</strong><p>아이디 <code>laladance</code> / 초기 비밀번호 <code>123456</code>으로 로그인합니다. 로그인 후 내 정보에서 비밀번호를 변경하세요.</p></div></div>
+              <div class="manual-item"><span class="manual-icon">👥</span><div><strong>사용자 관리</strong><p>가입한 원생·선생님 목록을 확인합니다. 계정 정지(로그인 차단) 또는 삭제가 가능합니다. 관리자 계정은 정지·삭제 불가합니다.</p></div></div>
+              <div class="manual-item"><span class="manual-icon">🔒</span><div><strong>학원코드 설정</strong><p>원생 및 선생님 회원가입 시 필요한 코드를 설정합니다. 코드를 모르면 가입할 수 없으니 필요한 분께만 알려주세요.</p></div></div>
+              <div class="manual-item"><span class="manual-icon">📢</span><div><strong>소식 관리</strong><p>메인 홈페이지에 표시되는 학원 소식(수상, 합격 등)을 추가·수정·삭제합니다.</p></div></div>
+              <div class="manual-item"><span class="manual-icon">📋</span><div><strong>수업안내 관리</strong><p>메인 홈페이지의 수업 소개 카드를 관리합니다. 카드 추가·수정·삭제가 가능합니다.</p></div></div>
+              <div class="manual-item"><span class="manual-icon">📅</span><div><strong>수업 관리</strong><p>대시보드 상단 메뉴에서 수업 추가·수정·삭제가 가능합니다. 수업 요일·시간·기간을 설정합니다.</p></div></div>
+              <div class="manual-item"><span class="manual-icon">⚙️</span><div><strong>수업 설정</strong><p>대시보드에 표시할 수업 목록을 선택합니다. 현재 운영 중인 수업만 켜두면 깔끔하게 관리됩니다.</p></div></div>
+            </div>
+          </div>
+
+          <div class="manual-section">
+            <div class="manual-role-badge badge-teacher">🎓 선생님</div>
+            <h3 class="manual-title">선생님 기능 안내</h3>
+            <div class="manual-block">
+              <div class="manual-item"><span class="manual-icon">📝</span><div><strong>회원가입</strong><p>가입 화면에서 역할을 <strong>선생님</strong>으로 선택하고 선생님 코드를 입력합니다. 코드는 관리자에게 문의하세요.</p></div></div>
+              <div class="manual-item"><span class="manual-icon">📊</span><div><strong>오늘·내일 수업 현황</strong><p>대시보드에서 오늘과 내일 수업의 출석 현황을 실시간으로 확인합니다. 수업 진행 여부(최소 인원 충족)를 한눈에 볼 수 있습니다.</p></div></div>
+              <div class="manual-item"><span class="manual-icon">✅</span><div><strong>출석 처리</strong><p>각 수업 카드에서 원생 이름 옆 버튼을 눌러 출석 처리·취소가 가능합니다. 선생님은 시간 제한 없이 언제든 수정할 수 있습니다.</p></div></div>
+              <div class="manual-item"><span class="manual-icon">📆</span><div><strong>출석 달력</strong><p>출석 달력 탭에서 월별 출석 현황을 확인합니다. ‹ › 버튼으로 과거 월도 조회 가능합니다.</p></div></div>
+              <div class="manual-item"><span class="manual-icon">🏫</span><div><strong>수업 추가·관리</strong><p>상단 메뉴 <strong>수업 관리</strong>에서 수업을 추가·수정·삭제할 수 있습니다.</p></div></div>
+            </div>
+          </div>
+
+          <div class="manual-section">
+            <div class="manual-role-badge badge-student">🩰 원생</div>
+            <h3 class="manual-title">원생 이용 안내</h3>
+            <div class="manual-block">
+              <div class="manual-item"><span class="manual-icon">📝</span><div><strong>회원가입</strong><p>가입 화면에서 역할을 <strong>원생</strong>으로 선택하고 원생 코드를 입력합니다. 코드는 선생님께 문의하세요.</p></div></div>
+              <div class="manual-item"><span class="manual-icon">📋</span><div><strong>수업 등록</strong><p>처음 로그인하면 내가 듣는 수업을 등록해야 합니다. 상단 메뉴 <strong>내 수업 등록</strong>에서 수강 중인 수업을 선택하고 저장하세요.</p></div></div>
+              <div class="manual-item"><span class="manual-icon">✅</span><div><strong>출석 체크</strong><p>대시보드에서 오늘·내일 수업 카드의 <strong>출석하기</strong> 버튼을 누릅니다. 수업 시작 <strong>1시간 전</strong>까지만 출석 등록이 가능합니다. 다시 누르면 취소됩니다.</p></div></div>
+              <div class="manual-item"><span class="manual-icon">📆</span><div><strong>출석 달력</strong><p>달력 탭에서 내 출석 기록을 월별로 확인할 수 있습니다. ‹ › 버튼으로 과거 월도 볼 수 있습니다.</p></div></div>
+              <div class="manual-item"><span class="manual-icon">🔐</span><div><strong>비밀번호 변경</strong><p>상단 메뉴 <strong>내 정보</strong>에서 비밀번호를 변경할 수 있습니다.</p></div></div>
+            </div>
+          </div>
+
+          <div class="manual-section">
+            <h3 class="manual-title" style="color:var(--text-mid)">💡 공통 안내</h3>
+            <div class="manual-block">
+              <div class="manual-item"><span class="manual-icon">🌐</span><div><strong>접속 주소</strong><p><code>https://santa-n.github.io/laradance/predict/login.html</code> 로 접속하거나 메인 홈페이지에서 <strong>출석관리시스템</strong> 버튼을 클릭하세요.</p></div></div>
+              <div class="manual-item"><span class="manual-icon">📱</span><div><strong>모바일 지원</strong><p>스마트폰 브라우저에서도 동일하게 이용 가능합니다.</p></div></div>
+              <div class="manual-item"><span class="manual-icon">🔒</span><div><strong>로그인 잠금</strong><p>비밀번호를 5회 이상 틀리면 15분간 로그인이 차단됩니다.</p></div></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
     </div>
   </main>
 
@@ -290,10 +362,11 @@
       btn.addEventListener('click', () => {
         document.querySelectorAll('.admin-tab').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        document.getElementById('tabUsers').style.display = btn.dataset.tab === 'users' ? '' : 'none';
-        document.getElementById('tabCodes').style.display = btn.dataset.tab === 'codes' ? '' : 'none';
+        document.getElementById('tabUsers').style.display     = btn.dataset.tab === 'users'     ? '' : 'none';
+        document.getElementById('tabCodes').style.display     = btn.dataset.tab === 'codes'     ? '' : 'none';
         document.getElementById('tabNews').style.display      = btn.dataset.tab === 'news'      ? '' : 'none';
-        document.getElementById('tabClassInfo').style.display  = btn.dataset.tab === 'classinfo' ? '' : 'none';
+        document.getElementById('tabClassInfo').style.display = btn.dataset.tab === 'classinfo' ? '' : 'none';
+        document.getElementById('tabManual').style.display    = btn.dataset.tab === 'manual'    ? '' : 'none';
         if (btn.dataset.tab === 'news') loadNewsAdmin();
         if (btn.dataset.tab === 'classinfo') loadClassInfoAdmin();
       });
