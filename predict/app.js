@@ -96,14 +96,13 @@ function _clearFails() {
 }
 
 // 아이디 → Firebase Auth용 이메일 변환
-// 한글·특수문자 포함 아이디도 허용되도록 base64 인코딩 후 @laradance.local 붙임
+// 한글 등 비ASCII 문자를 hex 인코딩하여 Firebase Auth 이메일 형식 호환
 function toFirebaseEmail(input) {
   if (!input) return '';
-  if (input.includes('@')) return input; // 이미 이메일 형식이면 그대로
-  // btoa는 ASCII만 지원 → encodeURIComponent로 안전하게 변환 후 base64
-  const safe = btoa(unescape(encodeURIComponent(input.trim().toLowerCase())))
-    .replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
-  return safe + '@laradance.local';
+  if (input.includes('@')) return input;
+  // encodeURIComponent로 퍼센트 인코딩 후 % 제거 → 순수 hex 문자열
+  const encoded = encodeURIComponent(input.trim().toLowerCase()).replace(/%/g, '');
+  return encoded + '@laradance.local';
 }
 
 // ===== 세션 =====
