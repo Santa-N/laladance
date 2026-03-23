@@ -234,6 +234,9 @@
     const isTeacher = session.role === 'teacher' || isAdmin;
     const todayISO  = todayStr();
     const todayDow  = new Date().getDay();
+    const _tmr      = new Date(); _tmr.setDate(_tmr.getDate() + 1);
+    const tomorrowISO = _tmr.toISOString().split('T')[0];
+    const tomorrowDow = _tmr.getDay();
     const CAT_COLORS = { kids:'#e8a0b0', elem:'#9a7eb8', modern:'#6aaa88', entrance:'#b89c6b', adult:'#c97a74' };
 
     // ===== NAVBAR =====
@@ -339,8 +342,15 @@
       renderCalendar();
     }
 
+    // ===== 출석 버튼 시간 제한: 수업 시작 1시간 전까지만 =====
+    function canCheckin(cls, dateStr) {
+      const cutoff = new Date(dateStr + 'T' + cls.time + ':00');
+      cutoff.setMinutes(cutoff.getMinutes() - 60);
+      return new Date() < cutoff;
+    }
+
     // ===== 카드 빌더 =====
-    function buildCard(cls, classCheckins, enrollCount = 0, enrolledStudents = []) {
+    function buildCard(cls, classCheckins, enrollCount = 0, enrolledStudents = [], dateStr = todayISO) {
       const count    = classCheckins.length;
       const status   = getStatus(count);
       const catColor = CAT_COLORS[cls.category] || '#b89c6b';
@@ -356,13 +366,15 @@
           <span class="class-cat-badge" style="background:${catColor}">${CAT_LABELS[cls.category]}</span>
         </div>`;
 
+      const dayLabel = dateStr === todayISO ? '오늘' : '내일';
+
       if (isTeacher) {
         const todayBadgeCls = count >= MIN_STUDENTS ? 'enroll-today' : 'enroll-today-wait';
         const studentRows = enrolledStudents.length > 0
           ? enrolledStudents.map(s => {
               const attended = classCheckins.some(c => c.userId === s.id);
               return `<div class="enrolled-row ${attended ? 'row-on' : 'row-off'}"
-                           onclick="teacherToggle('${cls.id}','${todayISO}','${s.id}')">
+                           onclick="teacherToggle('${cls.id}','${dateStr}','${s.id}')">
                 <span class="enr-icon">${attended ? '✅' : '❌'}</span>
                 <span class="enr-name">${esc(s.name)}</span>
                 <span class="enr-btn">${attended ? '출석 취소' : '출석 처리'}</span>
@@ -376,7 +388,7 @@
             <div class="class-card-body">
               <div class="class-enroll-row">
                 <span class="enroll-badge enroll-total">총 인원 ${enrollCount}명</span>
-                <span class="enroll-badge ${todayBadgeCls}">오늘 ${count}명 출석</span>
+                <span class="enroll-badge ${todayBadgeCls}">${dayLabel} ${count}명 출석</span>
               </div>
               <div class="progress-bar"><div class="progress-fill ${status.cls}" style="width:${progress}"></div></div>
               <div style="margin-bottom:8px"><span class="status-badge status-${status.cls}">${status.icon} ${status.label}</span></div>
@@ -386,17 +398,24 @@
       }
 
       // 원생 뷰
-      const checked = classCheckins.some(c => c.userId === session.id);
+      const checked   = classCheckins.some(c => c.userId === session.id);
+      const btnOk     = canCheckin(cls, dateStr);
       let banner;
       if (count >= MIN_STUDENTS) {
-        banner = `<div class="class-status-banner banner-on"><span class="banner-icon">🎉</span><div class="banner-text">오늘 수업 진행됩니다!<span class="banner-sub">수업이 확정되었어요</span></div></div>`;
+        banner = `<div class="class-status-banner banner-on"><span class="banner-icon">🎉</span><div class="banner-text">${dayLabel} 수업 진행됩니다!<span class="banner-sub">수업이 확정되었어요</span></div></div>`;
       } else if (count > 0) {
         banner = `<div class="class-status-banner banner-wait"><span class="banner-icon">⏳</span><div class="banner-text">수업 진행 대기 중<span class="banner-sub">${MIN_STUDENTS - count}명 더 있어야 수업이 진행돼요</span></div></div>`;
       } else {
         banner = `<div class="class-status-banner banner-off"><span class="banner-icon">😢</span><div class="banner-text">아직 출석한 원생이 없어요<span class="banner-sub">최소 ${MIN_STUDENTS}명 이상이어야 수업이 진행됩니다</span></div></div>`;
       }
-      const todayBadgeCls = count >= MIN_STUDENTS ? 'enroll-today' : 'enroll-today-wait';
-      const btnLabel = checked ? '✅ 출석 완료  (취소하려면 클릭)' : '오늘 출석하기';
+      const dayBadgeCls = count >= MIN_STUDENTS ? 'enroll-today' : 'enroll-today-wait';
+      const btnLabel = checked
+        ? `✅ 출석 완료 (취소하려면 클릭)`
+        : (dateStr === todayISO ? '오늘 출석하기' : '내일 출석 등록하기');
+
+      const btnHtml = btnOk
+        ? `<button class="btn-checkin${checked ? ' checked' : ''}" onclick="doCheckin('${cls.id}','${dateStr}')" style="margin-top:6px">${btnLabel}</button>`
+        : `<button class="btn-checkin" disabled style="margin-top:6px;opacity:.45;cursor:default">${checked ? '✅ 출석 완료' : '⏰ 출석 마감 (수업 1시간 전 마감)'}</button>`;
 
       return `
         <div class="class-card${checked ? ' recorded' : ''}" id="card-${cls.id}">
@@ -405,10 +424,10 @@
             ${banner}
             <div class="class-enroll-row">
               <span class="enroll-badge enroll-total">총 인원 ${enrollCount}명</span>
-              <span class="enroll-badge ${todayBadgeCls}">오늘 ${count}명 출석</span>
+              <span class="enroll-badge ${dayBadgeCls}">${dayLabel} ${count}명 출석</span>
             </div>
             <div class="progress-bar"><div class="progress-fill ${status.cls}" style="width:${progress}"></div></div>
-            <button class="btn-checkin${checked ? ' checked' : ''}" onclick="doCheckin('${cls.id}')" style="margin-top:6px">${btnLabel}</button>
+            ${btnHtml}
           </div>
         </div>`;
     }
@@ -500,9 +519,9 @@
     }
 
     // ===== 출석하기 (학생) =====
-    async function doCheckin(classId) {
+    async function doCheckin(classId, dateStr = todayISO) {
       try {
-        await toggleCheckin(classId, todayISO, session.id, session.name);
+        await toggleCheckin(classId, dateStr, session.id, session.name);
         await render();
         showToast('출석이 업데이트되었습니다');
       } catch { showToast('오류가 발생했습니다. 다시 시도해주세요.'); }
@@ -673,38 +692,48 @@
     // ===== 메인 렌더 =====
     async function render() {
       try {
-        const [allCheckins, allClasses, activeIds, userStats] = await Promise.all([
+        const [allCheckins, tmrCheckins, allClasses, activeIds, userStats] = await Promise.all([
           fetchTodayCheckins(todayISO),
+          fetchTodayCheckins(tomorrowISO),
           isTeacher ? fetchClasses() : Promise.resolve([]),
           isTeacher ? fetchActiveClassIds() : Promise.resolve(null),
           isTeacher ? fetchUserStats() : Promise.resolve(null),
         ]);
-        let classes, enrollmentCounts = null;
+        let enrollmentCounts = null;
         enrolledByClass = {};
         if (isTeacher) [enrollmentCounts, enrolledByClass] = await Promise.all([fetchEnrollmentCounts(), fetchEnrolledByClass()]);
 
+        // 오늘/내일 수업 분리 렌더 헬퍼
+        function renderDaySection(dayCls, checkins, dateStr, label) {
+          if (!dayCls.length) return '';
+          const cards = dayCls.map(cls => {
+            const cc  = checkins.filter(x => x.classId === cls.id);
+            const cnt = enrollmentCounts ? (enrollmentCounts[cls.id] || 0) : 0;
+            const enr = isTeacher ? (enrolledByClass[cls.id] || []) : [];
+            return buildCard(cls, cc, cnt, enr, dateStr);
+          }).join('');
+          return `<div style="grid-column:1/-1;font-size:.78rem;font-weight:700;letter-spacing:.1em;color:var(--gold-dark);text-transform:uppercase;padding:4px 0 8px;border-bottom:1px solid var(--border-light);margin-bottom:4px">${label}</div>${cards}`;
+        }
+
         if (isTeacher) {
-          const activeSet = activeIds ? new Set(activeIds) : null;
-          const filtered  = activeSet ? allClasses.filter(c => activeSet.has(c.id)) : allClasses;
-          weekClasses = filtered;
-          classes = filtered.filter(c => c.days.includes(todayDow)).sort((a,b) => a.time.localeCompare(b.time));
+          const activeSet     = activeIds ? new Set(activeIds) : null;
+          const filtered      = activeSet ? allClasses.filter(c => activeSet.has(c.id)) : allClasses;
+          weekClasses         = filtered;
+          const todayClasses  = filtered.filter(c => c.days.includes(todayDow)).sort((a,b)=>a.time.localeCompare(b.time));
+          const tmrClasses    = filtered.filter(c => c.days.includes(tomorrowDow)).sort((a,b)=>a.time.localeCompare(b.time));
 
-          if (classes.length === 0) {
-            document.getElementById('summaryGrid').innerHTML = '';
-            document.getElementById('classesGrid').innerHTML = `
-              <div class="no-classes" style="grid-column:1/-1">
-                <span class="icon">🌙</span><h3>오늘 해당 수업이 없습니다</h3>
-              </div>`;
-            return;
-          }
-
-          const onCount    = classes.filter(c => allCheckins.filter(x => x.classId === c.id).length >= MIN_STUDENTS).length;
-          const totalCheck = allCheckins.filter(x => classes.some(c => c.id === x.classId)).length;
+          const onCount    = todayClasses.filter(c => allCheckins.filter(x => x.classId === c.id).length >= MIN_STUDENTS).length;
+          const totalCheck = allCheckins.filter(x => todayClasses.some(c => c.id === x.classId)).length;
           document.getElementById('summaryGrid').innerHTML = `
-            <div class="summary-card"><div class="summary-icon gold">📅</div><div><div class="summary-label">오늘 수업 수</div><div class="summary-value">${classes.length}<sup>개</sup></div></div></div>
+            <div class="summary-card"><div class="summary-icon gold">📅</div><div><div class="summary-label">오늘 수업 수</div><div class="summary-value">${todayClasses.length}<sup>개</sup></div></div></div>
             <div class="summary-card"><div class="summary-icon mint">✅</div><div><div class="summary-label">수업 진행 확정</div><div class="summary-value">${onCount}<sup>개</sup></div></div></div>
             <div class="summary-card"><div class="summary-icon pink">👥</div><div><div class="summary-label">총 출석 예정</div><div class="summary-value">${totalCheck}<sup>명</sup></div></div></div>
             <div class="summary-card"><div class="summary-icon blue">🎓</div><div><div class="summary-label">등록 원생 수</div><div class="summary-value">${userStats ? userStats.totalStudents : '-'}<sup>명</sup></div></div></div>`;
+
+          let gridHtml = renderDaySection(todayClasses, allCheckins, todayISO, '📅 오늘 수업');
+          gridHtml    += renderDaySection(tmrClasses,   tmrCheckins,  tomorrowISO, '🌅 내일 수업');
+          if (!gridHtml) gridHtml = `<div class="no-classes" style="grid-column:1/-1"><span class="icon">🌙</span><h3>오늘·내일 해당 수업이 없습니다</h3></div>`;
+          document.getElementById('classesGrid').innerHTML = gridHtml;
 
         } else {
           let enrolledIds, serverClasses, myCheckins;
@@ -729,31 +758,21 @@
             return;
           }
 
-          weekClasses = serverClasses.filter(c => enrolledIds.includes(c.id));
-          classes = weekClasses.filter(c => c.days.includes(todayDow)).sort((a,b) => a.time.localeCompare(b.time));
+          weekClasses         = serverClasses.filter(c => enrolledIds.includes(c.id));
+          const todayClasses  = weekClasses.filter(c => c.days.includes(todayDow)).sort((a,b)=>a.time.localeCompare(b.time));
+          const tmrClasses    = weekClasses.filter(c => c.days.includes(tomorrowDow)).sort((a,b)=>a.time.localeCompare(b.time));
 
-          // 달력 (항상 표시)
           buildCalendar([...myCheckins, ...allCheckins.filter(c => c.userId === session.id)]);
 
-          // summary: 오늘 수업 수만 표시
           document.getElementById('summaryGrid').innerHTML = `
-            <div class="summary-card"><div class="summary-icon gold">📅</div><div><div class="summary-label">오늘 내 수업</div><div class="summary-value">${classes.length}<sup>개</sup></div></div></div>`;
+            <div class="summary-card"><div class="summary-icon gold">📅</div><div><div class="summary-label">오늘 내 수업</div><div class="summary-value">${todayClasses.length}<sup>개</sup></div></div></div>
+            <div class="summary-card"><div class="summary-icon blue">🌅</div><div><div class="summary-label">내일 내 수업</div><div class="summary-value">${tmrClasses.length}<sup>개</sup></div></div></div>`;
 
-          if (classes.length === 0) {
-            document.getElementById('classesGrid').innerHTML = `
-              <div class="no-classes" style="grid-column:1/-1">
-                <span class="icon">🌙</span><h3>오늘 내 수업이 없습니다</h3>
-              </div>`;
-            return;
-          }
+          let gridHtml = renderDaySection(todayClasses, allCheckins, todayISO, '📅 오늘 수업');
+          gridHtml    += renderDaySection(tmrClasses,   tmrCheckins,  tomorrowISO, '🌅 내일 수업');
+          if (!gridHtml) gridHtml = `<div class="no-classes" style="grid-column:1/-1"><span class="icon">🌙</span><h3>오늘·내일 내 수업이 없습니다</h3></div>`;
+          document.getElementById('classesGrid').innerHTML = gridHtml;
         }
-
-        document.getElementById('classesGrid').innerHTML = classes.map(cls => {
-          const classCheckins    = allCheckins.filter(x => x.classId === cls.id);
-          const enrollCount      = enrollmentCounts ? (enrollmentCounts[cls.id] || 0) : 0;
-          const enrolledStudents = isTeacher ? (enrolledByClass[cls.id] || []) : [];
-          return buildCard(cls, classCheckins, enrollCount, enrolledStudents);
-        }).join('');
 
         buildWeekSection(weekClasses, isTeacher ? null : session.id);
 
