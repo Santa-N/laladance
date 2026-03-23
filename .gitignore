@@ -1,0 +1,9 @@
+__pycache__/
+data/
+server.py
+start_server.py
+get_ig.py
+get_ig2.py
+get_naver_profile.py
+*.pyc
+.DS_Store

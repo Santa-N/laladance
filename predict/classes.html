@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>수업 관리 | 라라댄스</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Noto+Sans+KR:wght@300;400;500;700&family=Jua&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .page-wrap { max-width: 800px; margin: 0 auto; padding: 32px; }
+
+    /* 수업 행 */
+    .class-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: #fff;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      padding: 14px 18px;
+      margin-bottom: 10px;
+      transition: box-shadow .2s;
+    }
+    .class-row:hover { box-shadow: 0 2px 12px rgba(58,51,48,.07); }
+    .class-row-emoji { font-size: 1.5rem; flex-shrink: 0; }
+    .class-row-info  { flex: 1; }
+    .class-row-name  { font-size: .94rem; font-weight: 600; color: var(--text-dark); }
+    .class-row-meta  { font-size: .78rem; color: var(--text-light); margin-top: 2px; }
+    .class-row-cat   {
+      font-size: .68rem; font-weight: 600; padding: 3px 9px;
+      border-radius: 20px; color: #fff; flex-shrink: 0;
+    }
+    .btn-edit {
+      padding: 7px 14px;
+      background: #f0f5ff;
+      color: #2a5bb0;
+      border: 1.5px solid #b8ccf5;
+      border-radius: 50px;
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: .78rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all .2s;
+      flex-shrink: 0;
+    }
+    .btn-edit:hover { background: #2a5bb0; color: #fff; }
+    .btn-delete {
+      padding: 7px 14px;
+      background: #fff5f5;
+      color: #c0392b;
+      border: 1.5px solid #f5c0bb;
+      border-radius: 50px;
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: .78rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all .2s;
+      flex-shrink: 0;
+    }
+    .btn-delete:hover { background: #c0392b; color: #fff; }
+    .row-actions { display:flex; gap:6px; flex-shrink:0; }
+
+    /* 섹션 구분 */
+    .class-section { margin-bottom: 32px; }
+    .class-section-title {
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--gold-dark);
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    /* 추가 버튼 */
+    .btn-add-class {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      background: var(--text-dark);
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: .88rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all .25s;
+      margin-bottom: 32px;
+    }
+    .btn-add-class:hover { background: #1a1210; transform: translateY(-1px); }
+
+    /* 모달 */
+    .modal-overlay { position:fixed;inset:0;background:rgba(42,34,32,.45);backdrop-filter:blur(4px);z-index:500;display:none;align-items:center;justify-content:center;padding:20px; }
+    .modal-overlay.open { display:flex; }
+    .modal { background:#fff;border-radius:20px;padding:36px 32px;width:100%;max-width:480px;box-shadow:0 20px 60px rgba(42,34,32,.2);animation:modalIn .3s ease; }
+    @keyframes modalIn { from{opacity:0;transform:translateY(16px) scale(.97)} to{opacity:1;transform:translateY(0) scale(1)} }
+    .modal-title { font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:600;color:var(--text-dark);margin-bottom:20px; }
+
+    .day-checkboxes { display:flex;flex-wrap:wrap;gap:8px;margin-top:6px; }
+    .day-chip { display:flex;align-items:center;gap:5px;cursor:pointer; }
+    .day-chip input { display:none; }
+    .day-chip span {
+      padding:6px 13px;
+      border:1.5px solid var(--border);
+      border-radius:20px;
+      font-size:.82rem;
+      font-weight:500;
+      color:var(--text-mid);
+      transition:all .2s;
+    }
+    .day-chip input:checked + span { background:var(--text-dark);color:#fff;border-color:var(--text-dark); }
+
+    .modal-actions { display:flex;gap:10px;margin-top:24px; }
+    .btn-cancel { flex:1;padding:11px;background:var(--ivory);color:var(--text-mid);border:1.5px solid var(--border);border-radius:50px;font-family:'Noto Sans KR',sans-serif;font-size:.88rem;cursor:pointer;transition:all .25s; }
+    .btn-cancel:hover { background:var(--border); }
+    .btn-submit { flex:2;padding:11px;background:var(--text-dark);color:#fff;border:none;border-radius:50px;font-family:'Noto Sans KR',sans-serif;font-size:.88rem;font-weight:500;cursor:pointer;transition:all .25s; }
+    .btn-submit:hover { background:#1a1210; }
+
+    .empty-msg { text-align:center;padding:32px;color:var(--text-light);font-style:italic;font-size:.88rem; }
+
+    @media(max-width:600px) { .page-wrap{padding:20px 16px} .class-row{flex-wrap:wrap} }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <header class="navbar">
+    <div class="nav-inner">
+      <a href="../index.html" class="nav-logo">
+        <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="100" cy="100" r="95" fill="#ffffff" stroke="#b89c6b" stroke-width="4"/>
+          <g fill="#825b3a" stroke="#825b3a" stroke-linecap="round">
+            <path d="M 45 65 L 140 120" stroke-width="6"/><path d="M 120 108 L 165 135" stroke-width="3"/>
+            <path d="M 95 95 C 105 110 120 115 125 105 C 115 100 105 92 95 95 Z" stroke="none"/>
+            <path d="M 103 98 C 110 80 120 65 116 55 C 112 60 102 75 95 92 Z" stroke="none"/>
+            <path d="M 116 55 Q 95 45 78 40" stroke-width="2.5" fill="none"/>
+            <path d="M 115 55 Q 105 40 100 22" stroke-width="2" fill="none"/>
+            <ellipse cx="122" cy="48" rx="7" ry="5.5" transform="rotate(-30 122 48)" stroke="none"/>
+          </g>
+          <text x="100" y="148" font-family="'Cormorant Garamond', serif" font-size="28" font-weight="600" fill="#825b3a" text-anchor="middle" letter-spacing="0.1em">L A L A</text>
+          <text x="100" y="165" font-family="'DM Sans', sans-serif" font-size="11" font-weight="500" fill="#825b3a" text-anchor="middle" letter-spacing="0.05em">DANCE STUDIO</text>
+        </svg>
+        <div class="logo-texts">
+          <span class="logo-main">라라댄스무용학원</span>
+          <span class="logo-badge">출석 관리 시스템</span>
+        </div>
+      </a>
+      <nav class="nav-links">
+        <span class="nav-user"><span class="nav-user-dot"></span><span id="navUserName"></span></span>
+        <a href="dashboard.html">← 대시보드</a>
+        <a href="profile.html">내 정보</a>
+        <a href="#" class="nav-logout" id="logoutBtn">로그아웃</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <div class="container">
+      <div class="page-eyebrow">CLASS MANAGEMENT</div>
+      <h1 class="page-title">수업 관리</h1>
+      <p class="page-date" id="statsLine">불러오는 중...</p>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <main>
+    <div class="page-wrap">
+      <button class="btn-add-class" id="addBtn">+ 새 수업 추가</button>
+      <div id="classList"><div style="text-align:center;padding:40px;color:var(--text-light)">불러오는 중...</div></div>
+    </div>
+  </main>
+
+  <!-- ADD MODAL -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <div class="modal-title" id="modalTitle">새 수업 추가</div>
+      <form id="addForm" novalidate>
+        <div class="form-group">
+          <label class="form-label">수업명 *</label>
+          <input type="text" id="f-name" class="form-input" placeholder="예) 성인발레 야간반" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">이모지</label>
+          <input type="text" id="f-emoji" class="form-input" placeholder="🩰" maxlength="2" style="font-size:1.3rem" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">카테고리 *</label>
+          <select id="f-category" class="form-input">
+            <option value="kids">유아 발레</option>
+            <option value="elem">초등 발레</option>
+            <option value="modern">현대무용</option>
+            <option value="entrance">입시반</option>
+            <option value="adult" selected>성인 발레</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">수업 요일 *</label>
+          <div class="day-checkboxes">
+            <label class="day-chip"><input type="checkbox" value="1" /><span>월</span></label>
+            <label class="day-chip"><input type="checkbox" value="2" /><span>화</span></label>
+            <label class="day-chip"><input type="checkbox" value="3" /><span>수</span></label>
+            <label class="day-chip"><input type="checkbox" value="4" /><span>목</span></label>
+            <label class="day-chip"><input type="checkbox" value="5" /><span>금</span></label>
+            <label class="day-chip"><input type="checkbox" value="6" /><span>토</span></label>
+            <label class="day-chip"><input type="checkbox" value="0" /><span>일</span></label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">수업 시간 *</label>
+          <input type="time" id="f-time" class="form-input" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">수업 기간</label>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <input type="date" id="f-start" class="form-input" style="flex:1;min-width:130px" />
+            <span style="color:var(--text-light);font-size:.85rem">~</span>
+            <input type="date" id="f-end" class="form-input" style="flex:1;min-width:130px" />
+          </div>
+          <label style="display:flex;align-items:center;gap:6px;margin-top:8px;cursor:pointer;font-size:.82rem;color:var(--text-mid)">
+            <input type="checkbox" id="f-ongoing" style="width:15px;height:15px" />
+            종료일 없음 (상시 진행)
+          </label>
+        </div>
+        <p class="form-error" id="addError"></p>
+        <div class="modal-actions">
+          <button type="button" class="btn-cancel" id="modalCancel">취소</button>
+          <button type="submit" class="btn-submit" id="modalSubmit">추가하기</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="app.js"></script>
+  <script>
+    const session = requireAuth();
+    if (!session) throw new Error('not authenticated');
+    if (session.role !== 'teacher' && session.role !== 'admin') { window.location.href = 'dashboard.html'; }
+
+    document.getElementById('navUserName').textContent = session.name;
+    document.getElementById('logoutBtn').addEventListener('click', e => {
+      e.preventDefault(); clearSession(); window.location.href = 'login.html';
+    });
+
+    const CAT_COLORS = { kids:'#e8a0b0', elem:'#9a7eb8', modern:'#6aaa88', entrance:'#b89c6b', adult:'#c97a74' };
+    const DAY_KR     = ['일','월','화','수','목','금','토'];
+
+    function formatPeriod(cls) {
+      const fmt = s => { const d = new Date(s+'T00:00:00'); return `${d.getMonth()+1}/${d.getDate()}`; };
+      if (!cls.startDate && !cls.endDate) return '상시';
+      if (cls.startDate && (cls.ongoing || !cls.endDate)) return `${fmt(cls.startDate)} ~`;
+      if (cls.startDate && cls.endDate) return `${fmt(cls.startDate)} ~ ${fmt(cls.endDate)}`;
+      return '상시';
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    async function render() {
+      try {
+        const [classes, stats] = await Promise.all([fetchClasses(), fetchUserStats()]);
+        allClassesCache = classes;
+
+        document.getElementById('statsLine').textContent =
+          `전체 수업 ${classes.length}개 · 등록 원생 ${stats.totalStudents}명 · 선생님 ${stats.totalTeachers}명`;
+
+        // 카테고리별 그룹
+        const groups = { kids:[], elem:[], modern:[], entrance:[], adult:[], etc:[] };
+        classes.forEach(c => {
+          const g = groups[c.category] || groups.etc;
+          g.push(c);
+        });
+
+        const catOrder = ['kids','elem','modern','entrance','adult'];
+        const catNames = { kids:'유아 발레 🩰', elem:'초등 발레 🩰', modern:'현대무용 💃', entrance:'입시반 🏆', adult:'성인 발레 🌸' };
+
+        let html = '';
+        catOrder.forEach(cat => {
+          if (!groups[cat].length) return;
+          html += `<div class="class-section">
+            <div class="class-section-title">${catNames[cat]}</div>`;
+          groups[cat].sort((a,b) => a.time.localeCompare(b.time)).forEach(cls => {
+            const dayStr = cls.days.map(d => DAY_KR[d]).join('·');
+            const periodStr = formatPeriod(cls);
+            html += `
+              <div class="class-row" id="row-${cls.id}">
+                <span class="class-row-emoji">${cls.emoji}</span>
+                <div class="class-row-info">
+                  <div class="class-row-name">${cls.name}</div>
+                  <div class="class-row-meta">${cls.time} &nbsp;|&nbsp; ${dayStr} &nbsp;|&nbsp; ${periodStr}</div>
+                </div>
+                <span class="class-row-cat" style="background:${CAT_COLORS[cls.category]||'#b89c6b'}">${CAT_LABELS[cls.category]||cls.category}</span>
+                <div class="row-actions">
+                  <button class="btn-edit" onclick="onEdit('${cls.id}')">변경</button>
+                  <button class="btn-delete" onclick="onDelete('${cls.id}','${cls.name}')">삭제</button>
+                </div>
+              </div>`;
+          });
+          html += `</div>`;
+        });
+
+        document.getElementById('classList').innerHTML = html || '<div class="empty-msg">등록된 수업이 없습니다</div>';
+      } catch(e) {
+        document.getElementById('classList').innerHTML = `<div class="empty-msg" style="color:#c0392b">수업 목록을 불러오지 못했습니다.<br><small>${e.message}</small></div>`;
+        document.getElementById('statsLine').textContent = '데이터 로드 실패';
+      }
+    }
+
+    // 삭제
+    async function onDelete(id, name) {
+      if (!confirm(`"${name}" 수업을 삭제할까요?\n삭제하면 출석 기록은 유지되지만 수업 목록에서 사라집니다.`)) return;
+      await deleteClass(id);
+      showToast('수업이 삭제되었습니다');
+      render();
+    }
+
+    // 변경
+    let editingId = null;
+    let allClassesCache = [];
+
+    async function onEdit(id) {
+      const cls = allClassesCache.find(c => c.id === id);
+      if (!cls) return;
+      editingId = id;
+      document.getElementById('modalTitle').textContent = '수업 변경';
+      document.getElementById('modalSubmit').textContent = '변경하기';
+      document.getElementById('addError').classList.remove('show');
+
+      document.getElementById('f-name').value     = cls.name;
+      document.getElementById('f-emoji').value    = cls.emoji || '';
+      document.getElementById('f-category').value = cls.category;
+      document.getElementById('f-time').value     = cls.time;
+      document.getElementById('f-start').value    = cls.startDate || '';
+      document.getElementById('f-end').value      = cls.endDate   || '';
+      document.getElementById('f-ongoing').checked = !!cls.ongoing;
+      document.getElementById('f-end').disabled   = !!cls.ongoing;
+
+      document.querySelectorAll('.day-checkboxes input').forEach(inp => {
+        inp.checked = cls.days.includes(parseInt(inp.value));
+      });
+
+      document.getElementById('modalOverlay').classList.add('open');
+    }
+
+    // ongoing 체크박스 → 종료일 비활성화
+    document.getElementById('f-ongoing').addEventListener('change', function() {
+      document.getElementById('f-end').disabled = this.checked;
+      if (this.checked) document.getElementById('f-end').value = '';
+    });
+
+    // 추가 모달 열기
+    document.getElementById('addBtn').addEventListener('click', () => {
+      editingId = null;
+      document.getElementById('modalTitle').textContent  = '새 수업 추가';
+      document.getElementById('modalSubmit').textContent = '추가하기';
+      document.getElementById('addForm').reset();
+      document.getElementById('f-end').disabled = false;
+      document.getElementById('addError').classList.remove('show');
+      document.getElementById('modalOverlay').classList.add('open');
+    });
+    document.getElementById('modalCancel').addEventListener('click', () => {
+      document.getElementById('modalOverlay').classList.remove('open');
+    });
+    document.getElementById('modalOverlay').addEventListener('click', function(e) {
+      if (e.target === this) this.classList.remove('open');
+    });
+
+    document.getElementById('addForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const errEl = document.getElementById('addError');
+      const name      = document.getElementById('f-name').value.trim();
+      const emoji     = document.getElementById('f-emoji').value.trim() || '🩰';
+      const category  = document.getElementById('f-category').value;
+      const time      = document.getElementById('f-time').value;
+      const days      = [...document.querySelectorAll('.day-checkboxes input:checked')].map(i => parseInt(i.value));
+      const startDate = document.getElementById('f-start').value || null;
+      const ongoing   = document.getElementById('f-ongoing').checked;
+      const endDate   = ongoing ? null : (document.getElementById('f-end').value || null);
+      const accentMap = { kids:'#e8a0b0', elem:'#9a7eb8', modern:'#6aaa88', entrance:'#b89c6b', adult:'#c97a74' };
+
+      if (!name)        { errEl.textContent = '수업명을 입력해주세요.'; errEl.classList.add('show'); return; }
+      if (!time)        { errEl.textContent = '수업 시간을 선택해주세요.'; errEl.classList.add('show'); return; }
+      if (!days.length) { errEl.textContent = '수업 요일을 1개 이상 선택해주세요.'; errEl.classList.add('show'); return; }
+
+      const btn = document.getElementById('modalSubmit');
+      const data = { name, emoji, category, time, days, startDate, endDate, ongoing, accent: accentMap[category] || '#b89c6b' };
+
+      btn.disabled = true;
+      btn.textContent = editingId ? '변경 중...' : '추가 중...';
+
+      const result = editingId ? await updateClass(editingId, data) : await addClass(data);
+
+      if (result.ok) {
+        document.getElementById('modalOverlay').classList.remove('open');
+        showToast(editingId ? '수업이 변경되었습니다' : '새 수업이 추가되었습니다');
+        render();
+      } else {
+        errEl.textContent = result.msg; errEl.classList.add('show');
+      }
+      btn.textContent = editingId ? '변경하기' : '추가하기';
+      btn.disabled = false;
+    });
+
+    render();
+  </script>
+</body>
+</html>

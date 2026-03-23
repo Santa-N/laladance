@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>출석 대시보드 | 라라댄스</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Noto+Sans+KR:wght@300;400;500;700&family=Jua&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .status-badge { display:inline-flex;align-items:center;gap:5px;font-size:.74rem;font-weight:600;padding:4px 10px;border-radius:20px;letter-spacing:.03em; }
+    .status-on   { background:#e8f8ef;color:#2e7d52;border:1px solid #b8e8cc; }
+    .status-off  { background:#fff3f2;color:#c0392b;border:1px solid #f5c0bb; }
+    .status-wait { background:#fdf8ec;color:#946c00;border:1px solid #f0dfa0; }
+
+    .class-status-banner { display:flex;align-items:center;gap:10px;padding:12px 16px;border-radius:var(--radius-sm);margin-bottom:12px;font-size:.88rem;font-weight:600; }
+    .class-status-banner .banner-icon { font-size:1.3rem;flex-shrink:0; }
+    .class-status-banner .banner-text { line-height:1.4; }
+    .class-status-banner .banner-sub  { font-size:.76rem;font-weight:400;opacity:.8;display:block; }
+    .banner-on   { background:#e8f8ef;color:#2e7d52;border:1.5px solid #b8e8cc; }
+    .banner-wait { background:#fdf8ec;color:#7a5800;border:1.5px solid #f0dfa0; }
+    .banner-off  { background:#fff3f2;color:#a93226;border:1.5px solid #f5c0bb; }
+
+    .checkin-counter { display:flex;align-items:flex-end;gap:6px;margin:10px 0 6px; }
+    .checkin-num  { font-family:'Cormorant Garamond',serif;font-size:2.4rem;font-weight:600;color:var(--text-dark);line-height:1; }
+    .checkin-unit { font-size:.9rem;color:var(--text-mid);padding-bottom:4px; }
+    .checkin-min  { font-size:.78rem;color:var(--text-light);padding-bottom:4px; }
+
+    .progress-bar  { height:5px;background:var(--border);border-radius:3px;margin:8px 0 14px;overflow:hidden; }
+    .progress-fill { height:100%;border-radius:3px;transition:width .5s ease; }
+    .progress-fill.on   { background:linear-gradient(90deg,#6aaa88,#3a8a5a); }
+    .progress-fill.off  { background:linear-gradient(90deg,#e8a098,#c97a74); }
+    .progress-fill.wait { background:linear-gradient(90deg,#f0c870,#d4a830); }
+
+    .attendee-list  { display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;min-height:28px; }
+    .attendee-chip  { font-size:.76rem;background:var(--ivory);border:1px solid var(--border);border-radius:20px;padding:3px 10px;color:var(--text-mid); }
+    .attendee-empty { font-size:.8rem;color:var(--text-light);font-style:italic; }
+
+    .btn-checkin { width:100%;padding:12px;background:var(--text-dark);color:#fff;border:none;border-radius:50px;font-family:'Noto Sans KR',sans-serif;font-size:.9rem;font-weight:500;cursor:pointer;transition:all .25s;letter-spacing:.04em; }
+    .btn-checkin:hover  { background:#1a1210;transform:translateY(-1px); }
+    .btn-checkin.checked { background:linear-gradient(135deg,#eaf8ef,#d4f0de);color:#2e7d52;border:1.5px solid #b8e8cc; }
+    .btn-checkin.checked:hover { background:#fff3f2;color:#c0392b;border-color:#f5c0bb; }
+
+    .view-tabs { display:flex;gap:6px;margin-bottom:20px;border-bottom:1px solid var(--border-light);padding-bottom:0; }
+    .view-tab  { padding:8px 18px 10px;font-size:.85rem;font-weight:500;color:var(--text-light);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;background:none;border-top:none;border-left:none;border-right:none;font-family:'Noto Sans KR',sans-serif;margin-bottom:-1px; }
+    .view-tab.active { color:var(--gold-dark);border-bottom-color:var(--gold); }
+
+    .log-date-group { margin-bottom:24px; }
+    .log-date-title { font-size:.8rem;font-weight:600;color:var(--text-light);letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border-light); }
+    .log-row { display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-radius:var(--radius-sm);font-size:.85rem;transition:background .2s; }
+    .log-row:hover { background:var(--ivory); }
+    .log-row-count { font-size:.78rem;background:var(--ivory);border:1px solid var(--border);border-radius:20px;padding:2px 10px;color:var(--text-mid);font-weight:600; }
+
+    .enroll-prompt { text-align:center;padding:56px 20px; }
+    .enroll-prompt .icon { font-size:3rem;margin-bottom:12px;display:block; }
+    .enroll-prompt h3 { font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--text-mid);margin-bottom:8px; }
+    .enroll-prompt p { font-size:.88rem;color:var(--text-light);margin-bottom:20px; }
+    .btn-enroll { display:inline-block;padding:12px 28px;background:var(--text-dark);color:#fff;border-radius:50px;font-size:.88rem;font-weight:500;transition:all .25s; }
+    .btn-enroll:hover { background:#1a1210;transform:translateY(-1px); }
+
+    .loading { text-align:center;padding:60px;color:var(--text-light);font-size:.9rem; }
+
+    /* ===== 선생님 원생 출석 토글 ===== */
+    .enrolled-list { border-top:1px solid var(--border-light); margin-top:12px; padding-top:10px; display:flex; flex-direction:column; gap:4px; }
+    .enrolled-row { display:flex; align-items:center; gap:10px; padding:7px 10px; border-radius:8px; cursor:pointer; transition:background .15s; }
+    .enrolled-row:hover { background:var(--ivory); }
+    .enrolled-row.row-on  { background:#f0faf4; }
+    .enrolled-row.row-off { background:#fafafa; }
+    .enr-icon { font-size:.95rem; width:20px; text-align:center; flex-shrink:0; }
+    .enr-name { flex:1; font-size:.86rem; font-weight:500; color:var(--text-dark); }
+    .enr-btn  { font-size:.72rem; padding:2px 9px; border-radius:20px; font-weight:600; flex-shrink:0; }
+    .row-on  .enr-btn { background:#fde8e8; color:#c0392b; }
+    .row-off .enr-btn { background:#e8f8ef; color:#2e7d52; }
+
+    /* ===== 선생님 달력 탭 ===== */
+    .tcal-wrap { max-width:680px; margin:0 auto; }
+    .tcal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:3px; margin-bottom:12px; }
+    .tcal-day-name { text-align:center; font-size:.68rem; font-weight:700; color:var(--text-light); padding:4px 0 6px; }
+    .tcal-day { position:relative; text-align:center; padding:6px 2px 4px; font-size:.82rem; color:var(--text-mid); border-radius:8px; min-height:42px; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; gap:2px; cursor:pointer; transition:background .15s; }
+    .tcal-day:hover:not(.empty) { background:var(--ivory); }
+    .tcal-day.empty { cursor:default; }
+    .tcal-day.today { outline:2px solid var(--gold); outline-offset:-2px; color:var(--gold-dark); font-weight:700; }
+    .tcal-day.selected { background:linear-gradient(135deg,#e8f0ff,#d8e8ff) !important; outline:2px solid #4a80d0; outline-offset:-2px; color:#2a4a90; font-weight:700; }
+    .tcal-day.has-class { color:var(--text-dark); font-weight:600; }
+    .tcal-dots { display:flex; gap:2px; flex-wrap:wrap; justify-content:center; max-width:32px; }
+    .tcal-dot { width:5px; height:5px; border-radius:50%; }
+
+    .tcal-detail { background:#fff; border:1px solid var(--border-light); border-radius:var(--radius); padding:20px; margin-top:4px; }
+    .tcal-detail-title { font-size:.86rem; font-weight:700; color:var(--text-dark); margin-bottom:14px; padding-bottom:8px; border-bottom:1px solid var(--border-light); }
+    .tcal-class-block { margin-bottom:18px; }
+    .tcal-class-name { display:flex; align-items:center; gap:8px; font-size:.88rem; font-weight:600; color:var(--text-dark); margin-bottom:8px; }
+    .tcal-student-row { display:flex; align-items:center; gap:10px; padding:6px 10px; border-radius:7px; cursor:pointer; transition:background .15s; margin-bottom:3px; }
+    .tcal-student-row:hover { background:var(--ivory); }
+    .tcal-student-row.row-on  { background:#f0faf4; }
+    .tcal-student-row.row-off { background:#fafafa; }
+    .tcal-legend { display:flex; gap:12px; font-size:.74rem; color:var(--text-light); margin-bottom:12px; }
+
+    /* ===== 출석 달력 ===== */
+    .month-calendar { background:#fff;border:1px solid var(--border-light);border-radius:var(--radius);padding:20px 18px;margin-bottom:24px; }
+    .cal-header { display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:14px; }
+    .cal-header-center { display:flex;flex-direction:column;align-items:center;gap:4px; }
+    .cal-month-title { font-size:.94rem;font-weight:600;color:var(--text-dark); }
+    .cal-nav-btn { background:none;border:1.5px solid var(--border);border-radius:50%;width:30px;height:30px;font-size:1.1rem;cursor:pointer;color:var(--text-mid);display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0; }
+    .cal-nav-btn:hover:not(:disabled) { border-color:var(--gold);color:var(--gold-dark);background:var(--ivory); }
+    .cal-nav-btn:disabled { opacity:.25;cursor:default; }
+    .cal-attend-count { font-size:.78rem;color:var(--gold-dark);background:linear-gradient(135deg,#fdf8ec,#f5e8c8);border:1px solid #f0dfa0;border-radius:20px;padding:2px 10px; }
+    .cal-grid { display:grid;grid-template-columns:repeat(7,1fr);gap:3px; }
+    .cal-day-name { text-align:center;font-size:.68rem;font-weight:700;color:var(--text-light);padding:4px 0 6px;letter-spacing:.04em; }
+    .cal-day { position:relative;text-align:center;padding:5px 2px 4px;font-size:.8rem;color:var(--text-mid);border-radius:8px;min-height:34px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px; }
+    .cal-day.empty {}
+    .cal-day.attended { background:linear-gradient(135deg,#e8f8ef,#d4f0de);color:#2e7d52;font-weight:700; }
+    .cal-day.today { outline:2px solid var(--gold);outline-offset:-2px;color:var(--gold-dark);font-weight:700; }
+    .cal-day.attended.today { background:linear-gradient(135deg,#e8f8ef,#d4f0de);outline:2px solid #2e7d52;outline-offset:-2px;color:#2e7d52; }
+    .cal-dot { width:5px;height:5px;background:#6aaa88;border-radius:50%;display:block; }
+    .cal-legend { display:flex;gap:14px;justify-content:center;margin-top:10px;font-size:.74rem;color:var(--text-light); }
+    .cal-legend-item { display:flex;align-items:center;gap:5px; }
+    .cal-legend-box { width:12px;height:12px;border-radius:4px; }
+    .cal-legend-box.attended { background:#d4f0de;border:1px solid #6aaa88; }
+    .cal-legend-box.today { background:#fff;outline:2px solid var(--gold);outline-offset:-2px; }
+
+    /* ===== 이번 주 수업 ===== */
+    .week-section { margin-top: 8px; }
+    .week-day { background:#fff; border:1px solid var(--border-light); border-radius:var(--radius-sm); margin-bottom:10px; overflow:hidden; }
+    .week-day-header { display:flex; align-items:center; justify-content:space-between; padding:10px 16px; border-bottom:1px solid var(--border-light); }
+    .week-day-header.past-header { background:#fafafa; }
+    .week-day-header.upcoming-header { background:linear-gradient(135deg,#fdfaf5,#faf4ea); }
+    .week-day-label { display:flex; align-items:baseline; gap:8px; }
+    .week-day-name { font-size:.9rem; font-weight:700; color:var(--text-dark); }
+    .week-day-date { font-size:.78rem; color:var(--text-light); }
+    .week-badge { font-size:.68rem; font-weight:600; padding:2px 9px; border-radius:20px; }
+    .week-badge-past     { background:#f0f0f0; color:#888; }
+    .week-badge-upcoming { background:linear-gradient(135deg,#fdf8ec,#f5e8c8); color:var(--gold-dark); border:1px solid #f0dfa0; }
+    .week-class-list { padding:6px 8px; }
+    .week-class-row { display:flex; align-items:center; justify-content:space-between; padding:7px 8px; border-radius:6px; transition:background .15s; }
+    .week-class-row:hover { background:var(--ivory); }
+    .wk-info { display:flex; align-items:center; gap:8px; }
+    .wk-emoji { font-size:1rem; }
+    .wk-name  { font-size:.84rem; font-weight:500; color:var(--text-dark); }
+    .wk-time  { font-size:.76rem; color:var(--text-light); }
+    .wk-count { font-size:.75rem; font-weight:600; padding:2px 9px; border-radius:20px; white-space:nowrap; }
+    .wk-count-on   { background:#e8f8ef; color:#2e7d52; }
+    .wk-count-wait { background:#fdf8ec; color:#946c00; }
+    .wk-count-off  { background:#f5f5f5; color:#999; }
+    .wk-count-plan { background:var(--ivory); color:var(--text-light); border:1px solid var(--border-light); }
+
+    /* 수업 카드 수강 정보 */
+    .class-enroll-row { display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap; }
+    .enroll-badge { font-size:.75rem;padding:3px 10px;border-radius:20px;font-weight:600; }
+    .enroll-total { background:#f0f0f8;color:#5a5080; }
+    .enroll-today { background:#e8f8ef;color:#2e7d52; }
+    .enroll-today-wait { background:#fdf8ec;color:#946c00; }
+  </style>
+</head>
+<body>
+  <header class="navbar">
+    <div class="nav-inner">
+      <a href="../index.html" class="nav-logo">
+        <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="100" cy="100" r="95" fill="#ffffff" stroke="#b89c6b" stroke-width="4"/>
+          <g fill="#825b3a" stroke="#825b3a" stroke-linecap="round">
+            <path d="M 45 65 L 140 120" stroke-width="6"/><path d="M 120 108 L 165 135" stroke-width="3"/>
+            <path d="M 95 95 C 105 110 120 115 125 105 C 115 100 105 92 95 95 Z" stroke="none"/>
+            <path d="M 103 98 C 110 80 120 65 116 55 C 112 60 102 75 95 92 Z" stroke="none"/>
+            <path d="M 116 55 Q 95 45 78 40" stroke-width="2.5" fill="none"/>
+            <path d="M 115 55 Q 105 40 100 22" stroke-width="2" fill="none"/>
+            <ellipse cx="122" cy="48" rx="7" ry="5.5" transform="rotate(-30 122 48)" stroke="none"/>
+          </g>
+          <text x="100" y="148" font-family="'Cormorant Garamond', serif" font-size="28" font-weight="600" fill="#825b3a" text-anchor="middle" letter-spacing="0.1em">L A L A</text>
+          <text x="100" y="165" font-family="'DM Sans', sans-serif" font-size="11" font-weight="500" fill="#825b3a" text-anchor="middle" letter-spacing="0.05em">DANCE STUDIO</text>
+        </svg>
+        <div class="logo-texts">
+          <span class="logo-main">라라댄스무용학원</span>
+          <span class="logo-badge">출석 관리 시스템</span>
+        </div>
+      </a>
+      <nav class="nav-links">
+        <span class="nav-user"><span class="nav-user-dot"></span><span id="navUserName"></span></span>
+        <a href="classes.html"  id="navClassesLink"  style="display:none">수업 관리</a>
+        <a href="settings.html" id="navSettingsLink" style="display:none">수업 설정</a>
+        <a href="enroll.html"   id="navEnrollLink"   style="display:none">내 수업</a>
+        <a href="admin.html"    id="navAdminLink"    style="display:none">관리자</a>
+        <a href="profile.html">내 정보</a>
+        <a href="#" class="nav-logout" id="logoutBtn">로그아웃</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="page-header">
+    <div class="container">
+      <div class="page-eyebrow" id="pageEyebrow">TODAY</div>
+      <h1 class="page-title" id="pageTitle"></h1>
+      <p class="page-date" id="todayDate"></p>
+    </div>
+  </div>
+
+  <main class="main" style="padding-top:24px">
+    <div id="teacherTabs" style="display:none">
+      <div class="view-tabs">
+        <button class="view-tab active" data-tab="today">오늘 출석 현황</button>
+        <button class="view-tab" data-tab="cal">출석 달력</button>
+        <button class="view-tab" data-tab="log">과거 기록</button>
+      </div>
+    </div>
+    <div id="tabToday">
+      <div class="summary-grid" id="summaryGrid"></div>
+      <div id="studentCalendar" style="display:none"></div>
+      <h2 class="section-title" id="classesTitle">오늘 수업</h2>
+      <div class="classes-grid" id="classesGrid"><div class="loading">불러오는 중...</div></div>
+      <h2 class="section-title" id="weekTitle" style="display:none;margin-top:32px">이번 주 수업</h2>
+      <div class="week-section" id="weekGrid"></div>
+    </div>
+    <div id="tabCal" style="display:none">
+      <div class="tcal-wrap" id="tcalContent"><div class="loading">불러오는 중...</div></div>
+    </div>
+    <div id="tabLog" style="display:none">
+      <div id="logContent" style="padding-bottom:48px"><div class="loading">불러오는 중...</div></div>
+    </div>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="app.js"></script>
+  <script>
+    const session = requireAuth();
+    if (!session) throw new Error('not authenticated');
+
+    const isAdmin   = session.role === 'admin';
+    const isTeacher = session.role === 'teacher' || isAdmin;
+    const todayISO  = todayStr();
+    const todayDow  = new Date().getDay();
+    const CAT_COLORS = { kids:'#e8a0b0', elem:'#9a7eb8', modern:'#6aaa88', entrance:'#b89c6b', adult:'#c97a74' };
+
+    // ===== NAVBAR =====
+    document.getElementById('navUserName').textContent = session.name;
+    document.getElementById('logoutBtn').addEventListener('click', e => { e.preventDefault(); clearSession(); window.location.href = 'login.html'; });
+    if (isAdmin) document.getElementById('navAdminLink').style.display = '';
+    if (isTeacher) {
+      document.getElementById('navSettingsLink').style.display = '';
+      document.getElementById('navClassesLink').style.display  = '';
+    }
+    else           document.getElementById('navEnrollLink').style.display   = '';
+
+    document.getElementById('todayDate').textContent = formatDateKR(todayISO);
+    document.getElementById('pageTitle').textContent  = isTeacher ? '오늘 수업 현황' : '안녕하세요, ' + session.name + '님!';
+    document.getElementById('pageEyebrow').textContent = isTeacher ? 'TEACHER DASHBOARD' : 'MY ATTENDANCE';
+
+    // ===== TOAST =====
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2800);
+    }
+
+    // ===== STATUS 헬퍼 =====
+    function getStatus(count) {
+      if (count >= MIN_STUDENTS) return { cls:'on',   icon:'✅', label:'수업 진행' };
+      if (count > 0)             return { cls:'wait', icon:'⏳', label:`${MIN_STUDENTS - count}명 더 필요` };
+      return                            { cls:'off',  icon:'❌', label:'출석 없음' };
+    }
+
+    // ===== 출석 달력 (학생) =====
+    let studentCalCheckins = [];
+    let calYear  = new Date().getFullYear();
+    let calMonth = new Date().getMonth();
+
+    function buildCalendar(myCheckins) {
+      studentCalCheckins = myCheckins;
+      renderCalendar();
+    }
+
+    function renderCalendar() {
+      const year  = calYear, month = calMonth;
+      const now   = new Date();
+      const isCurMonth = (year === now.getFullYear() && month === now.getMonth());
+
+      const attendedDates = new Set(
+        studentCalCheckins.filter(c => {
+          const d = new Date(c.date + 'T00:00:00');
+          return d.getFullYear() === year && d.getMonth() === month;
+        }).map(c => parseInt(c.date.split('-')[2]))
+      );
+
+      const firstDay    = new Date(year, month, 1).getDay();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const monthNames  = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+
+      let cells = '';
+      for (let i = 0; i < firstDay; i++) cells += `<div class="cal-day empty"></div>`;
+      for (let d = 1; d <= daysInMonth; d++) {
+        const isToday    = isCurMonth && d === now.getDate();
+        const isAttended = attendedDates.has(d);
+        let cls = 'cal-day';
+        if (isAttended) cls += ' attended';
+        if (isToday)    cls += ' today';
+        cells += `<div class="${cls}">${d}${isAttended ? '<span class="cal-dot"></span>' : ''}</div>`;
+      }
+
+      document.getElementById('studentCalendar').innerHTML = `
+        <div class="month-calendar">
+          <div class="cal-header">
+            <button class="cal-nav-btn" onclick="calPrev()">‹</button>
+            <div class="cal-header-center">
+              <span class="cal-month-title">${year}년 ${monthNames[month]} 출석 기록</span>
+              <span class="cal-attend-count">${attendedDates.size}일 출석</span>
+            </div>
+            <button class="cal-nav-btn" onclick="calNext()" ${isCurMonth ? 'disabled' : ''}>›</button>
+          </div>
+          <div class="cal-grid">
+            <div class="cal-day-name">일</div><div class="cal-day-name">월</div>
+            <div class="cal-day-name">화</div><div class="cal-day-name">수</div>
+            <div class="cal-day-name">목</div><div class="cal-day-name">금</div>
+            <div class="cal-day-name">토</div>
+            ${cells}
+          </div>
+          <div class="cal-legend">
+            <span class="cal-legend-item"><span class="cal-legend-box attended"></span>출석한 날</span>
+            <span class="cal-legend-item"><span class="cal-legend-box today"></span>오늘</span>
+          </div>
+        </div>`;
+      document.getElementById('studentCalendar').style.display = '';
+    }
+
+    function calPrev() {
+      calMonth--;
+      if (calMonth < 0) { calMonth = 11; calYear--; }
+      renderCalendar();
+    }
+    function calNext() {
+      const now = new Date();
+      if (calYear === now.getFullYear() && calMonth === now.getMonth()) return;
+      calMonth++;
+      if (calMonth > 11) { calMonth = 0; calYear++; }
+      renderCalendar();
+    }
+
+    // ===== 카드 빌더 =====
+    function buildCard(cls, classCheckins, enrollCount = 0, enrolledStudents = []) {
+      const count    = classCheckins.length;
+      const status   = getStatus(count);
+      const catColor = CAT_COLORS[cls.category] || '#b89c6b';
+      const progress = Math.min(100, (count / MIN_STUDENTS) * 100) + '%';
+
+      const header = `
+        <div class="class-card-top">
+          <div class="class-card-info">
+            <span class="class-card-emoji">${cls.emoji}</span>
+            <div class="class-card-name">${cls.name}</div>
+            <div class="class-card-time">${cls.time}</div>
+          </div>
+          <span class="class-cat-badge" style="background:${catColor}">${CAT_LABELS[cls.category]}</span>
+        </div>`;
+
+      if (isTeacher) {
+        const todayBadgeCls = count >= MIN_STUDENTS ? 'enroll-today' : 'enroll-today-wait';
+        const studentRows = enrolledStudents.length > 0
+          ? enrolledStudents.map(s => {
+              const attended = classCheckins.some(c => c.userId === s.id);
+              return `<div class="enrolled-row ${attended ? 'row-on' : 'row-off'}"
+                           onclick="teacherToggle('${cls.id}','${todayISO}','${s.id}','${s.name}')">
+                <span class="enr-icon">${attended ? '✅' : '❌'}</span>
+                <span class="enr-name">${s.name}</span>
+                <span class="enr-btn">${attended ? '출석 취소' : '출석 처리'}</span>
+              </div>`;
+            }).join('')
+          : `<span class="attendee-empty">이 수업에 등록된 원생이 없습니다</span>`;
+
+        return `
+          <div class="class-card">
+            ${header}
+            <div class="class-card-body">
+              <div class="class-enroll-row">
+                <span class="enroll-badge enroll-total">총 인원 ${enrollCount}명</span>
+                <span class="enroll-badge ${todayBadgeCls}">오늘 ${count}명 출석</span>
+              </div>
+              <div class="progress-bar"><div class="progress-fill ${status.cls}" style="width:${progress}"></div></div>
+              <div style="margin-bottom:8px"><span class="status-badge status-${status.cls}">${status.icon} ${status.label}</span></div>
+              <div class="enrolled-list">${studentRows}</div>
+            </div>
+          </div>`;
+      }
+
+      // 원생 뷰
+      const checked = classCheckins.some(c => c.userId === session.id);
+      let banner;
+      if (count >= MIN_STUDENTS) {
+        banner = `<div class="class-status-banner banner-on"><span class="banner-icon">🎉</span><div class="banner-text">오늘 수업 진행됩니다!<span class="banner-sub">수업이 확정되었어요</span></div></div>`;
+      } else if (count > 0) {
+        banner = `<div class="class-status-banner banner-wait"><span class="banner-icon">⏳</span><div class="banner-text">수업 진행 대기 중<span class="banner-sub">${MIN_STUDENTS - count}명 더 있어야 수업이 진행돼요</span></div></div>`;
+      } else {
+        banner = `<div class="class-status-banner banner-off"><span class="banner-icon">😢</span><div class="banner-text">아직 출석한 원생이 없어요<span class="banner-sub">최소 ${MIN_STUDENTS}명 이상이어야 수업이 진행됩니다</span></div></div>`;
+      }
+      const todayBadgeCls = count >= MIN_STUDENTS ? 'enroll-today' : 'enroll-today-wait';
+      const btnLabel = checked ? '✅ 출석 완료  (취소하려면 클릭)' : '오늘 출석하기';
+
+      return `
+        <div class="class-card${checked ? ' recorded' : ''}" id="card-${cls.id}">
+          ${header}
+          <div class="class-card-body">
+            ${banner}
+            <div class="class-enroll-row">
+              <span class="enroll-badge enroll-total">총 인원 ${enrollCount}명</span>
+              <span class="enroll-badge ${todayBadgeCls}">오늘 ${count}명 출석</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill ${status.cls}" style="width:${progress}"></div></div>
+            <button class="btn-checkin${checked ? ' checked' : ''}" onclick="doCheckin('${cls.id}')" style="margin-top:6px">${btnLabel}</button>
+          </div>
+        </div>`;
+    }
+
+    // ===== 이번 주 수업 =====
+    function getWeekRange() {
+      const now = new Date();
+      const dow = now.getDay();
+      const mon = new Date(now);
+      mon.setDate(now.getDate() - (dow === 0 ? 6 : dow - 1));
+      const sun = new Date(mon);
+      sun.setDate(mon.getDate() + 6);
+      const fmt = d => d.toISOString().split('T')[0];
+      return { start: fmt(mon), end: fmt(sun) };
+    }
+
+    async function buildWeekSection(weekClasses, studentId = null) {
+      const { start, end } = getWeekRange();
+      const weekCheckins = await fetchCheckinsRange(start, end);
+      const DAY_KR = ['일','월','화','수','목','금','토'];
+
+      const startDate = new Date(start + 'T00:00:00');
+      let html = '';
+
+      for (let i = 0; i < 7; i++) {
+        const d = new Date(startDate);
+        d.setDate(startDate.getDate() + i);
+        const dateStr = d.toISOString().split('T')[0];
+        if (dateStr === todayISO) continue;
+
+        const dow      = d.getDay();
+        const isPast   = dateStr < todayISO;
+        const dayLabel = DAY_KR[dow] + '요일';
+        const dayDate  = `${d.getMonth()+1}/${d.getDate()}`;
+
+        const dayClasses = weekClasses.filter(c => c.days.includes(dow))
+                                      .sort((a,b) => a.time.localeCompare(b.time));
+        if (!dayClasses.length) continue;
+
+        const dayCheckins = weekCheckins.filter(c => c.date === dateStr);
+
+        const rows = dayClasses.map(cls => {
+          let countHtml;
+          if (isPast) {
+            if (studentId) {
+              // 학생 뷰: 내가 출석했는지만 표시
+              const myAttended = dayCheckins.some(c => c.classId === cls.id && c.userId === studentId);
+              countHtml = myAttended
+                ? `<span class="wk-count wk-count-on">✅ 출석</span>`
+                : `<span class="wk-count wk-count-off">✗ 미출석</span>`;
+            } else {
+              // 선생님 뷰: 몇 명 출석했는지
+              const count = dayCheckins.filter(c => c.classId === cls.id).length;
+              const st = getStatus(count);
+              const cls2 = st.cls === 'on' ? 'wk-count-on' : st.cls === 'wait' ? 'wk-count-wait' : 'wk-count-off';
+              countHtml = `<span class="wk-count ${cls2}">${st.icon} ${count}명 출석</span>`;
+            }
+          } else {
+            countHtml = `<span class="wk-count wk-count-plan">예정</span>`;
+          }
+          return `<div class="week-class-row">
+            <div class="wk-info">
+              <span class="wk-emoji">${cls.emoji}</span>
+              <span class="wk-name">${cls.name}</span>
+              <span class="wk-time">${cls.time}</span>
+            </div>
+            ${countHtml}
+          </div>`;
+        }).join('');
+
+        const headerCls = isPast ? 'past-header' : 'upcoming-header';
+        const badgeCls  = isPast ? 'week-badge-past' : 'week-badge-upcoming';
+        const badgeText = isPast ? '지난 수업' : '예정';
+
+        html += `<div class="week-day">
+          <div class="week-day-header ${headerCls}">
+            <div class="week-day-label">
+              <span class="week-day-name">${dayLabel}</span>
+              <span class="week-day-date">${dayDate}</span>
+            </div>
+            <span class="week-badge ${badgeCls}">${badgeText}</span>
+          </div>
+          <div class="week-class-list">${rows}</div>
+        </div>`;
+      }
+
+      document.getElementById('weekTitle').style.display = html ? '' : 'none';
+      document.getElementById('weekGrid').innerHTML = html;
+    }
+
+    // ===== 출석하기 (학생) =====
+    async function doCheckin(classId) {
+      try {
+        await toggleCheckin(classId, todayISO, session.id, session.name);
+        await render();
+        showToast('출석이 업데이트되었습니다');
+      } catch { showToast('오류가 발생했습니다. 다시 시도해주세요.'); }
+    }
+
+    // ===== 선생님 출석 토글 =====
+    async function teacherToggle(classId, date, userId, userName) {
+      try {
+        await toggleCheckin(classId, date, userId, userName);
+        if (date === todayISO) await render();
+        else await buildTeacherCal(teacherWeekClasses);
+        showToast('출석이 업데이트되었습니다');
+      } catch { showToast('오류가 발생했습니다.'); }
+    }
+
+    // ===== 선생님 달력 =====
+    let teacherWeekClasses = [];
+    let tcalMonthCheckins  = [];
+    let tcalEnrolledByClass = {};
+    let tcalSelectedDate   = null;
+    let tcalYear  = new Date().getFullYear();
+    let tcalMonth = new Date().getMonth();
+
+    async function buildTeacherCal(classes) {
+      teacherWeekClasses = classes;
+      await loadTcalMonth();
+    }
+
+    async function loadTcalMonth() {
+      const year  = tcalYear, month = tcalMonth;
+      const start = `${year}-${String(month+1).padStart(2,'0')}-01`;
+      const end   = new Date(year, month+1, 0).toISOString().split('T')[0];
+      document.getElementById('tcalContent').innerHTML = '<div class="loading">불러오는 중...</div>';
+      [tcalMonthCheckins, tcalEnrolledByClass] = await Promise.all([
+        fetchCheckinsRange(start, end),
+        fetchEnrolledByClass()
+      ]);
+      renderTcal(year, month);
+    }
+
+    async function tcalPrev() {
+      tcalMonth--;
+      if (tcalMonth < 0) { tcalMonth = 11; tcalYear--; }
+      tcalSelectedDate = null;
+      await loadTcalMonth();
+    }
+    async function tcalNext() {
+      const now = new Date();
+      if (tcalYear === now.getFullYear() && tcalMonth === now.getMonth()) return;
+      tcalMonth++;
+      if (tcalMonth > 11) { tcalMonth = 0; tcalYear++; }
+      tcalSelectedDate = null;
+      await loadTcalMonth();
+    }
+
+    function renderTcal(year, month) {
+      const monthNames = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+      const DAY_KR2   = ['일','월','화','수','목','금','토'];
+      const CAT_COLORS2 = { kids:'#e8a0b0', elem:'#9a7eb8', modern:'#6aaa88', entrance:'#b89c6b', adult:'#c97a74' };
+      const today     = new Date();
+      const todayD    = today.getDate();
+      const firstDay  = new Date(year, month, 1).getDay();
+      const daysInMon = new Date(year, month+1, 0).getDate();
+
+      let cells = '';
+      for (let i = 0; i < firstDay; i++) cells += `<div class="tcal-day empty"></div>`;
+
+      for (let d = 1; d <= daysInMon; d++) {
+        const dateStr  = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+        const dow      = new Date(dateStr + 'T00:00:00').getDay();
+        const dayClass = teacherWeekClasses.filter(c => c.days.includes(dow));
+        const isToday  = (year === today.getFullYear() && month === today.getMonth() && d === todayD);
+        const isSel    = tcalSelectedDate === dateStr;
+        const hasClass = dayClass.length > 0;
+
+        let cls = 'tcal-day';
+        if (hasClass) cls += ' has-class';
+        if (isToday)  cls += ' today';
+        if (isSel)    cls += ' selected';
+
+        const dots = dayClass.map(c => `<span class="tcal-dot" style="background:${CAT_COLORS2[c.category]||'#b89c6b'}"></span>`).join('');
+        cells += `<div class="${cls}" onclick="${hasClass ? `tcalSelectDay('${dateStr}')` : ''}">
+          ${d}
+          ${hasClass ? `<div class="tcal-dots">${dots}</div>` : ''}
+        </div>`;
+      }
+
+      const dayNames = DAY_KR2.map(d => `<div class="tcal-day-name">${d}</div>`).join('');
+      const detailHtml = tcalSelectedDate ? buildTcalDetail(tcalSelectedDate) : '';
+
+      const now2 = new Date();
+      const isCurTcal = (year === now2.getFullYear() && month === now2.getMonth());
+      document.getElementById('tcalContent').innerHTML = `
+        <div class="month-calendar" style="margin-bottom:16px">
+          <div class="cal-header">
+            <button class="cal-nav-btn" onclick="tcalPrev()">‹</button>
+            <div class="cal-header-center">
+              <span class="cal-month-title">${year}년 ${monthNames[month]} 출석 달력</span>
+            </div>
+            <button class="cal-nav-btn" onclick="tcalNext()" ${isCurTcal ? 'disabled' : ''}>›</button>
+          </div>
+          <div class="tcal-grid">${dayNames}${cells}</div>
+          <div class="tcal-legend">
+            <span>● 수업 있는 날</span>
+            <span style="color:var(--gold-dark)">■ 오늘</span>
+            <span style="color:#4a80d0">■ 선택된 날</span>
+          </div>
+        </div>
+        <div id="tcalDetailArea">${detailHtml}</div>`;
+    }
+
+    function tcalSelectDay(dateStr) {
+      tcalSelectedDate = dateStr;
+      renderTcal(tcalYear, tcalMonth);
+    }
+
+    function buildTcalDetail(dateStr) {
+      const d   = new Date(dateStr + 'T00:00:00');
+      const dow = d.getDay();
+      const DAY_KR2 = ['일','월','화','수','목','금','토'];
+      const isPast  = dateStr <= todayISO;
+      const dayClasses = teacherWeekClasses.filter(c => c.days.includes(dow));
+      if (!dayClasses.length) return '';
+
+      const dayCheckins = tcalMonthCheckins.filter(c => c.date === dateStr);
+      const monthNum = d.getMonth()+1, dayNum = d.getDate();
+
+      let html = `<div class="tcal-detail">
+        <div class="tcal-detail-title">${monthNum}월 ${dayNum}일 (${DAY_KR2[dow]}) 출석 현황</div>`;
+
+      dayClasses.sort((a,b) => a.time.localeCompare(b.time)).forEach(cls => {
+        const clsCheckins  = dayCheckins.filter(c => c.classId === cls.id);
+        const enrolled     = tcalEnrolledByClass[cls.id] || [];
+        const attendedCnt  = clsCheckins.length;
+
+        const rows = enrolled.length > 0
+          ? enrolled.map(s => {
+              const attended = clsCheckins.some(c => c.userId === s.id);
+              const canToggle = isPast;
+              return `<div class="tcal-student-row ${attended ? 'row-on' : 'row-off'}"
+                           ${canToggle ? `onclick="teacherToggle('${cls.id}','${dateStr}','${s.id}','${s.name}')"` : ''}>
+                <span class="enr-icon">${attended ? '✅' : '❌'}</span>
+                <span class="enr-name">${s.name}</span>
+                <span class="enr-btn">${canToggle ? (attended ? '출석 취소' : '출석 처리') : ''}</span>
+              </div>`;
+            }).join('')
+          : `<p class="attendee-empty">등록된 원생이 없습니다</p>`;
+
+        html += `<div class="tcal-class-block">
+          <div class="tcal-class-name">
+            <span>${cls.emoji}</span><span>${cls.name}</span>
+            <span style="font-size:.75rem;color:var(--text-light)">${cls.time}</span>
+            <span class="enroll-badge ${attendedCnt>=MIN_STUDENTS?'enroll-today':'enroll-today-wait'}" style="margin-left:auto">${attendedCnt}명 출석</span>
+          </div>
+          ${rows}
+        </div>`;
+      });
+
+      html += `</div>`;
+      return html;
+    }
+
+    // ===== 메인 렌더 =====
+    async function render() {
+      try {
+        const [allCheckins, allClasses, activeIds, userStats] = await Promise.all([
+          fetchTodayCheckins(todayISO),
+          isTeacher ? fetchClasses() : Promise.resolve([]),
+          isTeacher ? fetchActiveClassIds() : Promise.resolve(null),
+          isTeacher ? fetchUserStats() : Promise.resolve(null),
+        ]);
+        let classes, enrollmentCounts = null, enrolledByClass = {};
+        if (isTeacher) [enrollmentCounts, enrolledByClass] = await Promise.all([fetchEnrollmentCounts(), fetchEnrolledByClass()]);
+
+        if (isTeacher) {
+          const activeSet = activeIds ? new Set(activeIds) : null;
+          const filtered  = activeSet ? allClasses.filter(c => activeSet.has(c.id)) : allClasses;
+          weekClasses = filtered;
+          classes = filtered.filter(c => c.days.includes(todayDow)).sort((a,b) => a.time.localeCompare(b.time));
+
+          if (classes.length === 0) {
+            document.getElementById('summaryGrid').innerHTML = '';
+            document.getElementById('classesGrid').innerHTML = `
+              <div class="no-classes" style="grid-column:1/-1">
+                <span class="icon">🌙</span><h3>오늘 해당 수업이 없습니다</h3>
+              </div>`;
+            return;
+          }
+
+          const onCount    = classes.filter(c => allCheckins.filter(x => x.classId === c.id).length >= MIN_STUDENTS).length;
+          const totalCheck = allCheckins.filter(x => classes.some(c => c.id === x.classId)).length;
+          document.getElementById('summaryGrid').innerHTML = `
+            <div class="summary-card"><div class="summary-icon gold">📅</div><div><div class="summary-label">오늘 수업 수</div><div class="summary-value">${classes.length}<sup>개</sup></div></div></div>
+            <div class="summary-card"><div class="summary-icon mint">✅</div><div><div class="summary-label">수업 진행 확정</div><div class="summary-value">${onCount}<sup>개</sup></div></div></div>
+            <div class="summary-card"><div class="summary-icon pink">👥</div><div><div class="summary-label">총 출석 예정</div><div class="summary-value">${totalCheck}<sup>명</sup></div></div></div>
+            <div class="summary-card"><div class="summary-icon blue">🎓</div><div><div class="summary-label">등록 원생 수</div><div class="summary-value">${userStats ? userStats.totalStudents : '-'}<sup>명</sup></div></div></div>`;
+
+        } else {
+          let enrolledIds, serverClasses, myCheckins;
+          [enrolledIds, serverClasses, enrollmentCounts, myCheckins] = await Promise.all([
+            fetchEnrolledIds(session.id),
+            fetchClasses(),
+            fetchEnrollmentCounts(),
+            fetchMyCheckins(session.id),
+          ]);
+
+          if (enrolledIds.length === 0) {
+            document.getElementById('summaryGrid').innerHTML = '';
+            document.getElementById('studentCalendar').style.display = 'none';
+            document.getElementById('classesTitle').style.display = 'none';
+            document.getElementById('classesGrid').innerHTML = `
+              <div class="enroll-prompt" style="grid-column:1/-1">
+                <span class="icon">📋</span>
+                <h3>수강 수업을 등록해주세요</h3>
+                <p>내가 듣는 수업을 등록하면 오늘 출석 현황을 확인할 수 있어요</p>
+                <a href="enroll.html" class="btn-enroll">수업 등록하기</a>
+              </div>`;
+            return;
+          }
+
+          weekClasses = serverClasses.filter(c => enrolledIds.includes(c.id));
+          classes = weekClasses.filter(c => c.days.includes(todayDow)).sort((a,b) => a.time.localeCompare(b.time));
+
+          // 달력 (항상 표시)
+          buildCalendar([...myCheckins, ...allCheckins.filter(c => c.userId === session.id)]);
+
+          // summary: 오늘 수업 수만 표시
+          document.getElementById('summaryGrid').innerHTML = `
+            <div class="summary-card"><div class="summary-icon gold">📅</div><div><div class="summary-label">오늘 내 수업</div><div class="summary-value">${classes.length}<sup>개</sup></div></div></div>`;
+
+          if (classes.length === 0) {
+            document.getElementById('classesGrid').innerHTML = `
+              <div class="no-classes" style="grid-column:1/-1">
+                <span class="icon">🌙</span><h3>오늘 내 수업이 없습니다</h3>
+              </div>`;
+            return;
+          }
+        }
+
+        document.getElementById('classesGrid').innerHTML = classes.map(cls => {
+          const classCheckins    = allCheckins.filter(x => x.classId === cls.id);
+          const enrollCount      = enrollmentCounts ? (enrollmentCounts[cls.id] || 0) : 0;
+          const enrolledStudents = isTeacher ? (enrolledByClass[cls.id] || []) : [];
+          return buildCard(cls, classCheckins, enrollCount, enrolledStudents);
+        }).join('');
+
+        buildWeekSection(weekClasses, isTeacher ? null : session.id);
+
+      } catch(e) {
+        document.getElementById('classesGrid').innerHTML = `<div class="loading" style="color:var(--rose)">서버에 연결할 수 없습니다</div>`;
+      }
+    }
+
+    // ===== 과거 기록 =====
+    async function buildLog() {
+      const container = document.getElementById('logContent');
+      container.innerHTML = '<div class="loading">불러오는 중...</div>';
+      try {
+        const checkins = await fetchHistory();
+        if (checkins.length === 0) {
+          container.innerHTML = `<p style="color:var(--text-light);text-align:center;padding:40px">아직 기록이 없습니다</p>`;
+          return;
+        }
+        const byDate = {};
+        checkins.forEach(c => { (byDate[c.date] = byDate[c.date] || []).push(c); });
+        container.innerHTML = Object.entries(byDate).map(([date, items]) => {
+          const byClass = {};
+          items.forEach(c => { (byClass[c.classId] = byClass[c.classId] || []).push(c); });
+          const rows = Object.entries(byClass).map(([classId, members]) => {
+            const cls = LALA_CLASSES.find(c => c.id === classId);
+            return `<div class="log-row">
+              <span>${cls ? cls.emoji + ' ' + cls.name : classId}</span>
+              <div style="display:flex;align-items:center;gap:10px">
+                <span style="font-size:.8rem;color:var(--text-light)">${members.map(m => m.userName).join(', ')}</span>
+                <span class="log-row-count">${members.length}명</span>
+              </div></div>`;
+          }).join('');
+          return `<div class="log-date-group"><div class="log-date-title">${formatDateKR(date)}</div>${rows}</div>`;
+        }).join('');
+      } catch {
+        container.innerHTML = `<p style="color:var(--rose);text-align:center;padding:40px">불러오기 실패</p>`;
+      }
+    }
+
+    // weekClasses: render()에서 갱신되며 탭 핸들러에서도 접근 가능한 모듈 변수
+    let weekClasses = [];
+
+    // ===== 탭 (선생님) =====
+    if (isTeacher) {
+      document.getElementById('teacherTabs').style.display = '';
+      document.querySelectorAll('.view-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          document.querySelectorAll('.view-tab').forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          const target = tab.dataset.tab;
+          document.getElementById('tabToday').style.display = target === 'today' ? '' : 'none';
+          document.getElementById('tabCal').style.display   = target === 'cal'   ? '' : 'none';
+          document.getElementById('tabLog').style.display   = target === 'log'   ? '' : 'none';
+          if (target === 'cal') buildTeacherCal(weekClasses);
+          if (target === 'log') buildLog();
+        });
+      });
+    }
+
+    // ===== 초기 렌더 + 자동 갱신 =====
+    render();
+    setInterval(render, 15000); // 15초마다 자동 갱신
+  </script>
+</body>
+</html>

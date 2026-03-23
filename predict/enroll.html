@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>내 수업 등록 | 라라댄스</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Noto+Sans+KR:wght@300;400;500;700&family=Jua&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .cat-section { margin-bottom:36px; }
+    .cat-label { font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-dark);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border-light); }
+    .class-toggle-list { display:flex;flex-direction:column;gap:10px; }
+    .class-toggle { display:flex;align-items:center;justify-content:space-between;background:#fff;border:1.5px solid var(--border-light);border-radius:var(--radius-sm);padding:14px 18px;cursor:pointer;transition:border-color .2s,box-shadow .2s;user-select:none; }
+    .class-toggle:hover { border-color:var(--gold-light); }
+    .class-toggle.active { border-color:var(--gold);background:linear-gradient(135deg,#fdfaf5,#faf4ea);box-shadow:0 2px 10px rgba(184,156,107,.12); }
+    .toggle-info { display:flex;align-items:center;gap:12px; }
+    .toggle-emoji { font-size:1.3rem; }
+    .toggle-name  { font-size:.92rem;font-weight:600;color:var(--text-dark); }
+    .toggle-meta  { font-size:.78rem;color:var(--text-light);margin-top:1px; }
+    .days-tag { font-size:.72rem;color:var(--text-light);background:var(--ivory);border:1px solid var(--border-light);border-radius:20px;padding:2px 8px;margin-left:4px; }
+    .toggle-switch { position:relative;width:44px;height:24px;flex-shrink:0; }
+    .toggle-switch input { opacity:0;width:0;height:0;position:absolute; }
+    .toggle-track { position:absolute;inset:0;background:var(--border);border-radius:24px;transition:background .25s;cursor:pointer; }
+    .toggle-track::before { content:'';position:absolute;width:18px;height:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:transform .25s;box-shadow:0 1px 4px rgba(0,0,0,.15); }
+    .toggle-switch input:checked + .toggle-track { background:var(--gold); }
+    .toggle-switch input:checked + .toggle-track::before { transform:translateX(20px); }
+    .settings-wrap { max-width:720px;margin:0 auto;padding:32px; }
+    .notice-box { background:linear-gradient(135deg,#fdf8ec,#faf2dd);border:1px solid #f0dfa0;border-radius:var(--radius-sm);padding:14px 18px;font-size:.84rem;color:#6a5000;margin-bottom:28px;display:flex;gap:10px;align-items:flex-start; }
+    .settings-actions { position:sticky;bottom:0;background:rgba(253,251,248,.95);backdrop-filter:blur(12px);border-top:1px solid var(--border-light);padding:16px 32px;display:flex;align-items:center;justify-content:space-between;gap:12px; }
+    .active-count { font-size:.86rem;color:var(--text-mid); }
+    .active-count strong { color:var(--gold-dark); }
+    .btn-save-settings { padding:10px 28px;background:var(--text-dark);color:#fff;border:none;border-radius:50px;font-family:'Noto Sans KR',sans-serif;font-size:.88rem;font-weight:500;cursor:pointer;transition:all .25s; }
+    .btn-save-settings:hover { background:#1a1210; }
+    @media(max-width:600px) { .settings-wrap{padding:20px 16px} .settings-actions{padding:14px 16px} }
+  </style>
+</head>
+<body>
+  <header class="navbar">
+    <div class="nav-inner">
+      <a href="../index.html" class="nav-logo">
+        <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="100" cy="100" r="95" fill="#ffffff" stroke="#b89c6b" stroke-width="4"/>
+          <g fill="#825b3a" stroke="#825b3a" stroke-linecap="round">
+            <path d="M 45 65 L 140 120" stroke-width="6"/><path d="M 120 108 L 165 135" stroke-width="3"/>
+            <path d="M 95 95 C 105 110 120 115 125 105 C 115 100 105 92 95 95 Z" stroke="none"/>
+            <path d="M 103 98 C 110 80 120 65 116 55 C 112 60 102 75 95 92 Z" stroke="none"/>
+            <path d="M 116 55 Q 95 45 78 40" stroke-width="2.5" fill="none"/>
+            <path d="M 115 55 Q 105 40 100 22" stroke-width="2" fill="none"/>
+            <ellipse cx="122" cy="48" rx="7" ry="5.5" transform="rotate(-30 122 48)" stroke="none"/>
+          </g>
+          <text x="100" y="148" font-family="'Cormorant Garamond', serif" font-size="28" font-weight="600" fill="#825b3a" text-anchor="middle" letter-spacing="0.1em">L A L A</text>
+          <text x="100" y="165" font-family="'DM Sans', sans-serif" font-size="11" font-weight="500" fill="#825b3a" text-anchor="middle" letter-spacing="0.05em">DANCE STUDIO</text>
+        </svg>
+        <div class="logo-texts">
+          <span class="logo-main">라라댄스무용학원</span>
+          <span class="logo-badge">출석 관리 시스템</span>
+        </div>
+      </a>
+      <nav class="nav-links">
+        <span class="nav-user"><span class="nav-user-dot"></span><span id="navUserName"></span></span>
+        <a href="dashboard.html">← 대시보드</a>
+        <a href="profile.html">내 정보</a>
+        <a href="#" class="nav-logout" id="logoutBtn">로그아웃</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="page-header">
+    <div class="container">
+      <div class="page-eyebrow">MY CLASSES</div>
+      <h1 class="page-title">내 수업 등록</h1>
+      <p class="page-date">내가 수강하는 수업을 선택해주세요</p>
+    </div>
+  </div>
+
+  <main>
+    <div class="settings-wrap">
+      <div class="notice-box">ℹ️ 내가 수강하는 수업만 선택하세요. 선택한 수업만 대시보드에서 출석 체크를 할 수 있습니다.</div>
+      <div id="settingsWrap"><div style="text-align:center;padding:40px;color:var(--text-light)">불러오는 중...</div></div>
+    </div>
+  </main>
+
+  <div class="settings-actions">
+    <p class="active-count">선택된 수업: <strong id="activeCountNum">0</strong>개</p>
+    <button class="btn-save-settings" id="saveBtn">저장하기</button>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="app.js"></script>
+  <script>
+    const session = requireAuth();
+    if (!session) throw new Error('not authenticated');
+    if (session.role !== 'student') { window.location.href = 'dashboard.html'; }
+
+    document.getElementById('navUserName').textContent = session.name;
+    document.getElementById('logoutBtn').addEventListener('click', e => { e.preventDefault(); clearSession(); window.location.href = 'login.html'; });
+
+    const DAY_KR = ['일','월','화','수','목','금','토'];
+    const CAT_GROUPS = [
+      { key:'kids',     label:'유아 발레', emoji:'🩰' },
+      { key:'elem',     label:'초등 발레', emoji:'🩰' },
+      { key:'modern',   label:'현대무용',  emoji:'💃' },
+      { key:'entrance', label:'입시반',    emoji:'🏆' },
+      { key:'adult',    label:'성인 발레', emoji:'🌸' },
+    ];
+
+    const checked = new Set();
+    let serverClasses = [];
+    function updateCount() { document.getElementById('activeCountNum').textContent = checked.size; }
+
+    function render() {
+      const wrap = document.getElementById('settingsWrap');
+      wrap.innerHTML = CAT_GROUPS.map(group => {
+        const classes = serverClasses.filter(c => c.category === group.key);
+        return `<div class="cat-section">
+          <div class="cat-label">${group.emoji} ${group.label}</div>
+          <div class="class-toggle-list">
+            ${classes.map(cls => {
+              const isOn = checked.has(cls.id);
+              return `<label class="class-toggle${isOn ? ' active' : ''}" id="toggle-${cls.id}">
+                <div class="toggle-info">
+                  <span class="toggle-emoji">${cls.emoji}</span>
+                  <div>
+                    <div class="toggle-name">${cls.name}</div>
+                    <div class="toggle-meta">${cls.time}<span class="days-tag">${cls.days.map(d=>DAY_KR[d]).join('·')}</span></div>
+                  </div>
+                </div>
+                <div class="toggle-switch">
+                  <input type="checkbox" value="${cls.id}" ${isOn ? 'checked' : ''} />
+                  <span class="toggle-track"></span>
+                </div>
+              </label>`;
+            }).join('')}
+          </div>
+        </div>`;
+      }).join('');
+
+      wrap.querySelectorAll('input[type=checkbox]').forEach(input => {
+        input.addEventListener('change', () => {
+          const id = input.value;
+          const label = document.getElementById('toggle-' + id);
+          if (input.checked) { checked.add(id); label.classList.add('active'); }
+          else               { checked.delete(id); label.classList.remove('active'); }
+          updateCount();
+        });
+      });
+    }
+
+    document.getElementById('saveBtn').addEventListener('click', async () => {
+      const btn = document.getElementById('saveBtn');
+      btn.textContent = '저장 중...'; btn.disabled = true;
+      try {
+        await saveEnrolledIds(session.id, [...checked]);
+        const t = document.getElementById('toast');
+        t.textContent = `✅ ${checked.size}개 수업이 저장되었습니다`;
+        t.classList.add('show');
+        setTimeout(() => { window.location.href = 'dashboard.html'; }, 1000);
+      } catch {
+        document.getElementById('toast').textContent = '저장 실패. 다시 시도해주세요.';
+        document.getElementById('toast').classList.add('show');
+        setTimeout(() => document.getElementById('toast').classList.remove('show'), 2000);
+        btn.textContent = '저장하기'; btn.disabled = false;
+      }
+    });
+
+    // 초기 로드
+    (async () => {
+      const [ids, classes] = await Promise.all([fetchEnrolledIds(session.id), fetchClasses()]);
+      serverClasses = classes;
+      ids.forEach(id => checked.add(id));
+      render(); updateCount();
+    })();
+  </script>
+</body>
+</html>

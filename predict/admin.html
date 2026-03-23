@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>관리자 페이지 | 라라댄스</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Noto+Sans+KR:wght@300;400;500;700&family=Jua&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .admin-wrap { max-width: 860px; margin: 0 auto; padding: 32px; }
+
+    /* 탭 */
+    .admin-tabs { display:flex; gap:6px; margin-bottom:28px; border-bottom:1px solid var(--border-light); padding-bottom:0; }
+    .admin-tab  { padding:9px 22px 11px; font-size:.88rem; font-weight:500; color:var(--text-light); cursor:pointer; border-bottom:2px solid transparent; transition:all .2s; background:none; border-top:none; border-left:none; border-right:none; font-family:'Noto Sans KR',sans-serif; margin-bottom:-1px; }
+    .admin-tab.active { color:var(--gold-dark); border-bottom-color:var(--gold); }
+
+    /* 사용자 테이블 */
+    .user-table { width:100%; border-collapse:collapse; font-size:.88rem; }
+    .user-table th { text-align:left; padding:10px 12px; font-size:.72rem; font-weight:700; letter-spacing:.1em; color:var(--text-light); text-transform:uppercase; border-bottom:2px solid var(--border-light); }
+    .user-table td { padding:12px 12px; border-bottom:1px solid var(--border-light); vertical-align:middle; }
+    .user-table tr:last-child td { border-bottom:none; }
+    .user-table tr:hover td { background:var(--ivory); }
+    .user-table-wrap { background:#fff; border:1px solid var(--border-light); border-radius:var(--radius); overflow:hidden; }
+
+    .role-chip { display:inline-block; padding:2px 9px; border-radius:20px; font-size:.7rem; font-weight:600; }
+    .role-admin   { background:#e8d5f0; color:#6a2d8f; }
+    .role-teacher { background:#d5e8f0; color:#1a6080; }
+    .role-student { background:#e8f0d5; color:#3a6020; }
+
+    .status-chip { display:inline-block; padding:2px 9px; border-radius:20px; font-size:.7rem; font-weight:600; }
+    .status-active   { background:#e8f8ef; color:#2e7d52; }
+    .status-suspended { background:#fff3f2; color:#c0392b; }
+
+    .btn-action { padding:5px 12px; border-radius:20px; font-family:'Noto Sans KR',sans-serif; font-size:.75rem; font-weight:500; cursor:pointer; transition:all .2s; border:1.5px solid; }
+    .btn-suspend { background:#fff8f0; color:#a05000; border-color:#f0d0a0; }
+    .btn-suspend:hover { background:#a05000; color:#fff; }
+    .btn-unsuspend { background:#f0fff4; color:#2e7d52; border-color:#a8e0bc; }
+    .btn-unsuspend:hover { background:#2e7d52; color:#fff; }
+    .btn-del { background:#fff5f5; color:#c0392b; border-color:#f5c0bb; margin-left:4px; }
+    .btn-del:hover { background:#c0392b; color:#fff; }
+
+    /* 소식 관리 */
+    .news-admin-list { display:flex; flex-direction:column; gap:12px; margin-bottom:20px; }
+    .news-admin-item { background:#fff; border:1px solid var(--border-light); border-radius:var(--radius); padding:16px 20px; display:flex; align-items:flex-start; gap:14px; }
+    .news-admin-icon { font-size:1.5rem; flex-shrink:0; }
+    .news-admin-body { flex:1; min-width:0; }
+    .news-admin-date { font-size:.72rem; color:var(--text-light); margin-bottom:2px; }
+    .news-admin-title { font-weight:600; color:var(--text-dark); margin-bottom:2px; }
+    .news-admin-desc { font-size:.82rem; color:var(--text-mid); white-space:pre-wrap; }
+    .news-admin-actions { display:flex; gap:6px; flex-shrink:0; }
+    .news-form-card { background:#fff; border:1px solid var(--border-light); border-radius:var(--radius); padding:24px 28px; margin-bottom:20px; }
+    .news-form-row { display:flex; gap:12px; margin-bottom:14px; flex-wrap:wrap; }
+    .news-form-row label { display:flex; flex-direction:column; gap:5px; font-size:.8rem; color:var(--text-mid); font-weight:500; }
+    .news-form-row label.flex1 { flex:1; min-width:120px; }
+    .news-form-row input, .news-form-row textarea { padding:9px 13px; border:1.5px solid var(--border); border-radius:var(--radius-sm); font-family:'Noto Sans KR',sans-serif; font-size:.88rem; color:var(--text-dark); }
+    .news-form-row input:focus, .news-form-row textarea:focus { outline:none; border-color:var(--gold); }
+    .news-form-row textarea { resize:vertical; min-height:72px; }
+
+    /* 학원코드 설정 */
+    .code-card { background:#fff; border:1px solid var(--border-light); border-radius:var(--radius); padding:28px 32px; margin-bottom:20px; }
+    .code-row { display:flex; align-items:center; gap:16px; margin-bottom:16px; flex-wrap:wrap; }
+    .code-label { width:80px; font-size:.84rem; color:var(--text-mid); font-weight:500; flex-shrink:0; }
+    .code-input { flex:1; min-width:160px; padding:10px 16px; border:1.5px solid var(--border); border-radius:var(--radius-sm); font-family:'Noto Sans KR',sans-serif; font-size:.92rem; color:var(--text-dark); letter-spacing:.06em; }
+    .code-input:focus { outline:none; border-color:var(--gold); }
+    .code-hint { font-size:.76rem; color:var(--text-light); margin-top:-8px; margin-bottom:8px; padding-left:96px; }
+    .btn-save-codes { padding:11px 32px; background:var(--text-dark); color:#fff; border:none; border-radius:50px; font-family:'Noto Sans KR',sans-serif; font-size:.88rem; font-weight:500; cursor:pointer; transition:all .25s; }
+    .btn-save-codes:hover { background:#1a1210; }
+
+    .section-subtitle { font-size:.72rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--gold-dark); margin-bottom:16px; }
+    .notice-box { background:linear-gradient(135deg,#fdf8ec,#faf2dd); border:1px solid #f0dfa0; border-radius:var(--radius-sm); padding:12px 16px; font-size:.82rem; color:#6a5000; margin-bottom:20px; }
+
+    @media(max-width:600px) { .admin-wrap{padding:20px 16px} .code-hint{padding-left:0} .code-row{flex-direction:column;align-items:flex-start} }
+  </style>
+</head>
+<body>
+  <header class="navbar">
+    <div class="nav-inner">
+      <a href="../index.html" class="nav-logo">
+        <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="100" cy="100" r="95" fill="#ffffff" stroke="#b89c6b" stroke-width="4"/>
+          <g fill="#825b3a" stroke="#825b3a" stroke-linecap="round">
+            <path d="M 45 65 L 140 120" stroke-width="6"/><path d="M 120 108 L 165 135" stroke-width="3"/>
+            <path d="M 95 95 C 105 110 120 115 125 105 C 115 100 105 92 95 95 Z" stroke="none"/>
+            <path d="M 103 98 C 110 80 120 65 116 55 C 112 60 102 75 95 92 Z" stroke="none"/>
+            <path d="M 116 55 Q 95 45 78 40" stroke-width="2.5" fill="none"/>
+            <path d="M 115 55 Q 105 40 100 22" stroke-width="2" fill="none"/>
+            <ellipse cx="122" cy="48" rx="7" ry="5.5" transform="rotate(-30 122 48)" stroke="none"/>
+          </g>
+          <text x="100" y="148" font-family="'Cormorant Garamond', serif" font-size="28" font-weight="600" fill="#825b3a" text-anchor="middle" letter-spacing="0.1em">L A L A</text>
+          <text x="100" y="165" font-family="'DM Sans', sans-serif" font-size="11" font-weight="500" fill="#825b3a" text-anchor="middle" letter-spacing="0.05em">DANCE STUDIO</text>
+        </svg>
+        <div class="logo-texts">
+          <span class="logo-main">라라댄스무용학원</span>
+          <span class="logo-badge">출석 관리 시스템</span>
+        </div>
+      </a>
+      <nav class="nav-links">
+        <span class="nav-user"><span class="nav-user-dot"></span><span id="navUserName"></span></span>
+        <a href="dashboard.html">← 대시보드</a>
+        <a href="profile.html">내 정보</a>
+        <a href="#" class="nav-logout" id="logoutBtn">로그아웃</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="page-header">
+    <div class="container">
+      <div class="page-eyebrow">ADMIN</div>
+      <h1 class="page-title">관리자 페이지</h1>
+      <p class="page-date" id="statsLine">불러오는 중...</p>
+    </div>
+  </div>
+
+  <main>
+    <div class="admin-wrap">
+      <div class="admin-tabs">
+        <button class="admin-tab active" data-tab="users">사용자 관리</button>
+        <button class="admin-tab" data-tab="codes">학원코드 설정</button>
+        <button class="admin-tab" data-tab="news">소식 관리</button>
+        <button class="admin-tab" data-tab="classinfo">수업안내 관리</button>
+      </div>
+
+      <!-- 사용자 관리 탭 -->
+      <div id="tabUsers">
+        <div class="notice-box">ℹ️ 정지된 계정은 로그인이 차단됩니다. 관리자 계정(라라댄스)은 삭제·정지할 수 없습니다.</div>
+        <div class="user-table-wrap">
+          <table class="user-table">
+            <thead>
+              <tr>
+                <th>이름</th>
+                <th>아이디 / 이메일</th>
+                <th>구분</th>
+                <th>상태</th>
+                <th>관리</th>
+              </tr>
+            </thead>
+            <tbody id="userTableBody">
+              <tr><td colspan="5" style="text-align:center;padding:32px;color:var(--text-light)">불러오는 중...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 소식 관리 탭 -->
+      <div id="tabNews" style="display:none">
+        <div class="news-form-card">
+          <div class="section-subtitle" id="newsFormTitle">새 소식 추가</div>
+          <input type="hidden" id="newsEditId" value="" />
+          <div class="news-form-row">
+            <label class="flex1">날짜 <input type="text" id="newsDate" placeholder="예: 2024. 02 · 매년 · 상시" /></label>
+            <label style="width:80px">아이콘 <input type="text" id="newsIcon" placeholder="🏆" maxlength="4" /></label>
+          </div>
+          <div class="news-form-row">
+            <label class="flex1">제목 <input type="text" id="newsTitle" placeholder="소식 제목" /></label>
+          </div>
+          <div class="news-form-row">
+            <label class="flex1">내용 <textarea id="newsDesc" placeholder="소식 내용을 입력하세요"></textarea></label>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn-save-codes" id="saveNewsBtn">추가</button>
+            <button class="btn-save-codes" id="cancelNewsBtn" style="background:#aaa;display:none">취소</button>
+          </div>
+        </div>
+        <div id="newsAdminList" class="news-admin-list">
+          <div style="text-align:center;padding:24px;color:var(--text-light)">불러오는 중...</div>
+        </div>
+      </div>
+
+      <!-- 수업안내 관리 탭 -->
+      <div id="tabClassInfo" style="display:none">
+        <div class="news-form-card">
+          <div class="section-subtitle" id="ciFormTitle">새 수업 카드 추가</div>
+          <input type="hidden" id="ciEditId" value="" />
+          <div class="news-form-row">
+            <label class="flex1">수업 이름 <input type="text" id="ciTitle" placeholder="예: 유아 발레" /></label>
+            <label style="width:80px">이모지 <input type="text" id="ciEmoji" placeholder="🩰" maxlength="4" /></label>
+          </div>
+          <div class="news-form-row">
+            <label class="flex1">배지 텍스트 <input type="text" id="ciBadge" placeholder="유아 / 초등 / 성인 / 입시" /></label>
+            <label class="flex1">대상 나이/조건 <input type="text" id="ciAge" placeholder="5세 ~ 7세" /></label>
+          </div>
+          <div class="news-form-row">
+            <label>
+              카테고리 (필터)
+              <select id="ciFilterCat" style="padding:9px 13px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:.88rem">
+                <option value="kids">어린이</option>
+                <option value="teens">입시반</option>
+                <option value="adult">성인</option>
+                <option value="kids teens">어린이+입시</option>
+              </select>
+            </label>
+            <label>
+              카드 색상
+              <select id="ciColor" style="padding:9px 13px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:.88rem">
+                <option value="pink">분홍 (유아)</option>
+                <option value="lavender">라벤더 (초등기초)</option>
+                <option value="sky">하늘 (초등중급)</option>
+                <option value="mint">민트 (현대무용)</option>
+                <option value="gold">골드 (영재)</option>
+                <option value="rose">로즈 (입시)</option>
+                <option value="blush">블러시 (성인)</option>
+              </select>
+            </label>
+            <label>
+              카드 스타일
+              <select id="ciFeatured" style="padding:9px 13px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:.88rem">
+                <option value="normal">일반</option>
+                <option value="featured">특별 (골드 테두리)</option>
+                <option value="featuredMain">대표 (리본 + 강조)</option>
+              </select>
+            </label>
+          </div>
+          <div class="news-form-row" id="ciRibbonRow" style="display:none">
+            <label class="flex1">리본 텍스트 <input type="text" id="ciRibbon" placeholder="입시 전문" /></label>
+          </div>
+          <div class="news-form-row">
+            <label class="flex1">설명 <textarea id="ciDesc" placeholder="수업 소개를 입력하세요"></textarea></label>
+          </div>
+          <div class="news-form-row">
+            <label class="flex1">시간표 (한 줄에 하나, 형식: 라벨 | 시간)
+              <textarea id="ciSchedule" placeholder="A반 | 월·수·금 15:00&#10;B반 | 화·목 16:00"></textarea>
+            </label>
+          </div>
+          <div class="news-form-row">
+            <label class="flex1">수강료 <input type="text" id="ciPrice" placeholder="월 140,000원 (주 3회)" /></label>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn-save-codes" id="saveCiBtn">추가</button>
+            <button class="btn-save-codes" id="cancelCiBtn" style="background:#aaa;display:none">취소</button>
+          </div>
+        </div>
+        <div id="classInfoAdminList" class="news-admin-list">
+          <div style="text-align:center;padding:24px;color:var(--text-light)">불러오는 중...</div>
+        </div>
+      </div>
+
+      <!-- 학원코드 탭 -->
+      <div id="tabCodes" style="display:none">
+        <div class="code-card">
+          <div class="section-subtitle">학원 가입 코드</div>
+          <div class="notice-box">회원가입 시 역할에 맞는 코드를 입력해야 합니다. 코드는 선생님이 원생에게 알려주세요.</div>
+          <div class="code-row">
+            <span class="code-label">원생 코드</span>
+            <input type="text" id="codeStudent" class="code-input" placeholder="원생 가입 코드" />
+          </div>
+          <div class="code-hint">원생 회원가입 시 입력하는 코드</div>
+          <div class="code-row">
+            <span class="code-label">선생님 코드</span>
+            <input type="text" id="codeTeacher" class="code-input" placeholder="선생님 가입 코드" />
+          </div>
+          <div class="code-hint">선생님 회원가입 시 입력하는 코드</div>
+          <p class="form-error" id="codeError"></p>
+          <button class="btn-save-codes" id="saveCodesBtn">코드 저장</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="app.js"></script>
+  <script>
+    const session = requireAuth();
+    if (!session) throw new Error('not authenticated');
+    if (session.role !== 'admin') { window.location.href = 'dashboard.html'; }
+
+    document.getElementById('navUserName').textContent = session.name;
+    document.getElementById('logoutBtn').addEventListener('click', e => {
+      e.preventDefault(); clearSession(); window.location.href = 'login.html';
+    });
+
+    const ROLE_LABELS  = { admin:'관리자', teacher:'선생님', student:'원생' };
+    const ROLE_CLASSES = { admin:'role-admin', teacher:'role-teacher', student:'role-student' };
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    // ===== 탭 전환 =====
+    document.querySelectorAll('.admin-tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.admin-tab').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('tabUsers').style.display = btn.dataset.tab === 'users' ? '' : 'none';
+        document.getElementById('tabCodes').style.display = btn.dataset.tab === 'codes' ? '' : 'none';
+        document.getElementById('tabNews').style.display      = btn.dataset.tab === 'news'      ? '' : 'none';
+        document.getElementById('tabClassInfo').style.display  = btn.dataset.tab === 'classinfo' ? '' : 'none';
+        if (btn.dataset.tab === 'news') loadNewsAdmin();
+        if (btn.dataset.tab === 'classinfo') loadClassInfoAdmin();
+      });
+    });
+
+    // ===== 사용자 목록 =====
+    async function loadUsers() {
+      try {
+        const users = await fetchAllUsers();
+        const stats = await fetchUserStats();
+        document.getElementById('statsLine').textContent =
+          `전체 ${users.length}명 · 원생 ${stats.totalStudents}명 · 선생님 ${stats.totalTeachers}명`;
+
+        const tbody = document.getElementById('userTableBody');
+        if (!users.length) {
+          tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:32px;color:var(--text-light)">등록된 사용자가 없습니다</td></tr>';
+          return;
+        }
+        tbody.innerHTML = users.map(u => {
+          const isAdmin = u.id === 'admin_laladance';
+          const suspendBtn = isAdmin ? '' :
+            u.suspended
+              ? `<button class="btn-action btn-unsuspend" onclick="onUnsuspend('${u.id}')">정지 해제</button>`
+              : `<button class="btn-action btn-suspend"   onclick="onSuspend('${u.id}')">정지</button>`;
+          const deleteBtn = isAdmin ? '' : `<button class="btn-action btn-del" onclick="onDelete('${u.id}','${u.name}')">삭제</button>`;
+          return `<tr>
+            <td style="font-weight:600;color:var(--text-dark)">${u.name}</td>
+            <td style="color:var(--text-mid)">${u.email}</td>
+            <td><span class="role-chip ${ROLE_CLASSES[u.role]||''}">${ROLE_LABELS[u.role]||u.role}</span></td>
+            <td><span class="status-chip ${u.suspended ? 'status-suspended':'status-active'}">${u.suspended?'정지':'정상'}</span></td>
+            <td>${suspendBtn}${deleteBtn}</td>
+          </tr>`;
+        }).join('');
+      } catch(e) {
+        document.getElementById('userTableBody').innerHTML =
+          `<tr><td colspan="5" style="text-align:center;padding:32px;color:#c0392b">불러오기 실패: ${e.message}</td></tr>`;
+      }
+    }
+
+    async function onSuspend(id) {
+      if (!confirm('이 계정을 정지하시겠습니까? 해당 사용자는 로그인할 수 없게 됩니다.')) return;
+      await suspendUser(id);
+      showToast('계정이 정지되었습니다');
+      loadUsers();
+    }
+    async function onUnsuspend(id) {
+      await suspendUser(id);
+      showToast('정지가 해제되었습니다');
+      loadUsers();
+    }
+    async function onDelete(id, name) {
+      if (!confirm(`"${name}" 계정을 삭제하시겠습니까?\n삭제하면 복구할 수 없습니다.`)) return;
+      const res = await deleteUser(id);
+      if (res.ok) { showToast('계정이 삭제되었습니다'); loadUsers(); }
+      else showToast('삭제 실패: ' + res.msg);
+    }
+
+    // ===== 학원코드 =====
+    async function loadCodes() {
+      try {
+        const codes = await fetchCodes();
+        document.getElementById('codeStudent').value = codes.student || '';
+        document.getElementById('codeTeacher').value = codes.teacher || '';
+      } catch(e) { /* ignore */ }
+    }
+
+    document.getElementById('saveCodesBtn').addEventListener('click', async () => {
+      const errEl   = document.getElementById('codeError');
+      const student = document.getElementById('codeStudent').value.trim();
+      const teacher = document.getElementById('codeTeacher').value.trim();
+      errEl.classList.remove('show');
+      if (!student || !teacher) { errEl.textContent = '코드를 모두 입력해주세요.'; errEl.classList.add('show'); return; }
+      const btn = document.getElementById('saveCodesBtn');
+      btn.textContent = '저장 중...'; btn.disabled = true;
+      try {
+        await saveCodes(student, teacher);
+        showToast('✅ 학원 코드가 저장되었습니다');
+      } catch { showToast('저장 실패. 다시 시도해주세요.'); }
+      btn.textContent = '코드 저장'; btn.disabled = false;
+    });
+
+    // ===== 소식 관리 =====
+    let newsCache = [];
+
+    async function loadNewsAdmin() {
+      try {
+        newsCache = await fetchNews();
+        renderNewsAdmin();
+      } catch(e) {
+        document.getElementById('newsAdminList').innerHTML =
+          `<div style="text-align:center;padding:24px;color:#c0392b">불러오기 실패: ${e.message}</div>`;
+      }
+    }
+
+    function renderNewsAdmin() {
+      const el = document.getElementById('newsAdminList');
+      if (!newsCache.length) {
+        el.innerHTML = '<div style="text-align:center;padding:24px;color:var(--text-light)">등록된 소식이 없습니다</div>';
+        return;
+      }
+      el.innerHTML = newsCache.map(n => `
+        <div class="news-admin-item">
+          <div class="news-admin-icon">${n.icon||'📌'}</div>
+          <div class="news-admin-body">
+            <div class="news-admin-date">${n.date||''}</div>
+            <div class="news-admin-title">${n.title||''}</div>
+            <div class="news-admin-desc">${n.description||''}</div>
+          </div>
+          <div class="news-admin-actions">
+            <button class="btn-action btn-suspend" onclick="onEditNews('${n.id}')">수정</button>
+            <button class="btn-action btn-del" onclick="onDeleteNews('${n.id}','${(n.title||'').replace(/'/g,"\\'")}')">삭제</button>
+          </div>
+        </div>`).join('');
+    }
+
+    function resetNewsForm() {
+      document.getElementById('newsEditId').value = '';
+      document.getElementById('newsDate').value   = '';
+      document.getElementById('newsIcon').value   = '';
+      document.getElementById('newsTitle').value  = '';
+      document.getElementById('newsDesc').value   = '';
+      document.getElementById('newsFormTitle').textContent = '새 소식 추가';
+      document.getElementById('saveNewsBtn').textContent   = '추가';
+      document.getElementById('cancelNewsBtn').style.display = 'none';
+    }
+
+    function onEditNews(id) {
+      const n = newsCache.find(x => x.id === id);
+      if (!n) return;
+      document.getElementById('newsEditId').value = id;
+      document.getElementById('newsDate').value   = n.date || '';
+      document.getElementById('newsIcon').value   = n.icon || '';
+      document.getElementById('newsTitle').value  = n.title || '';
+      document.getElementById('newsDesc').value   = n.description || '';
+      document.getElementById('newsFormTitle').textContent = '소식 수정';
+      document.getElementById('saveNewsBtn').textContent   = '수정 저장';
+      document.getElementById('cancelNewsBtn').style.display = '';
+      window.scrollTo({ top: document.getElementById('tabNews').getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' });
+    }
+
+    async function onDeleteNews(id, title) {
+      if (!confirm(`"${title}" 소식을 삭제하시겠습니까?`)) return;
+      await deleteNews(id);
+      showToast('삭제되었습니다');
+      loadNewsAdmin();
+    }
+
+    document.getElementById('cancelNewsBtn').addEventListener('click', resetNewsForm);
+
+    document.getElementById('saveNewsBtn').addEventListener('click', async () => {
+      const id    = document.getElementById('newsEditId').value.trim();
+      const date  = document.getElementById('newsDate').value.trim();
+      const icon  = document.getElementById('newsIcon').value.trim();
+      const title = document.getElementById('newsTitle').value.trim();
+      const desc  = document.getElementById('newsDesc').value.trim();
+      if (!title) { showToast('제목을 입력해주세요'); return; }
+      const btn = document.getElementById('saveNewsBtn');
+      btn.disabled = true;
+      try {
+        if (id) {
+          await updateNews(id, { date, icon, title, description: desc });
+          showToast('수정되었습니다');
+        } else {
+          await addNews({ date, icon, title, description: desc });
+          showToast('추가되었습니다');
+        }
+        resetNewsForm();
+        loadNewsAdmin();
+      } catch(e) { showToast('저장 실패: ' + e.message); }
+      btn.disabled = false;
+    });
+
+    // ===== 수업안내 관리 =====
+    let ciCache = [];
+    const CAT_LABEL  = { kids:'어린이', teens:'입시반', adult:'성인', 'kids teens':'어린이+입시' };
+    const COLOR_NAME = { pink:'분홍', lavender:'라벤더', sky:'하늘', mint:'민트', gold:'골드', rose:'로즈', blush:'블러시' };
+
+    document.getElementById('ciFeatured').addEventListener('change', function() {
+      document.getElementById('ciRibbonRow').style.display = this.value === 'featuredMain' ? '' : 'none';
+    });
+
+    async function loadClassInfoAdmin() {
+      try {
+        ciCache = await fetchClassInfo();
+        renderClassInfoAdmin();
+      } catch(e) {
+        document.getElementById('classInfoAdminList').innerHTML =
+          `<div style="text-align:center;padding:24px;color:#c0392b">불러오기 실패: ${e.message}</div>`;
+      }
+    }
+
+    function renderClassInfoAdmin() {
+      const el = document.getElementById('classInfoAdminList');
+      if (!ciCache.length) {
+        el.innerHTML = '<div style="text-align:center;padding:24px;color:var(--text-light)">등록된 수업 카드가 없습니다</div>';
+        return;
+      }
+      el.innerHTML = ciCache.map(item => `
+        <div class="news-admin-item">
+          <div class="news-admin-icon">${item.emoji||'🩰'}</div>
+          <div class="news-admin-body">
+            <div class="news-admin-date">${CAT_LABEL[item.filterCat]||item.filterCat} · ${COLOR_NAME[item.colorTheme]||item.colorTheme}${item.featuredMain?' · 대표':item.featured?' · 특별':''}</div>
+            <div class="news-admin-title">${item.title||''} <small style="font-weight:400;color:var(--text-light)">${item.badge||''} / ${item.age||''}</small></div>
+            <div class="news-admin-desc" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${item.description||''}</div>
+          </div>
+          <div class="news-admin-actions">
+            <button class="btn-action btn-suspend" onclick="onEditCi('${item.id}')">수정</button>
+            <button class="btn-action btn-del" onclick="onDeleteCi('${item.id}','${(item.title||'').replace(/'/g,"\\'")}')">삭제</button>
+          </div>
+        </div>`).join('');
+    }
+
+    function resetCiForm() {
+      document.getElementById('ciEditId').value = '';
+      ['ciTitle','ciEmoji','ciBadge','ciAge','ciDesc','ciSchedule','ciPrice','ciRibbon'].forEach(id => {
+        document.getElementById(id).value = '';
+      });
+      document.getElementById('ciFilterCat').value = 'kids';
+      document.getElementById('ciColor').value = 'pink';
+      document.getElementById('ciFeatured').value = 'normal';
+      document.getElementById('ciRibbonRow').style.display = 'none';
+      document.getElementById('ciFormTitle').textContent = '새 수업 카드 추가';
+      document.getElementById('saveCiBtn').textContent = '추가';
+      document.getElementById('cancelCiBtn').style.display = 'none';
+    }
+
+    function onEditCi(id) {
+      const item = ciCache.find(x => x.id === id);
+      if (!item) return;
+      document.getElementById('ciEditId').value = id;
+      document.getElementById('ciTitle').value = item.title || '';
+      document.getElementById('ciEmoji').value = item.emoji || '';
+      document.getElementById('ciBadge').value = item.badge || '';
+      document.getElementById('ciAge').value   = item.age   || '';
+      document.getElementById('ciFilterCat').value = item.filterCat || 'kids';
+      document.getElementById('ciColor').value = item.colorTheme || 'pink';
+      document.getElementById('ciFeatured').value = item.featuredMain ? 'featuredMain' : item.featured ? 'featured' : 'normal';
+      document.getElementById('ciRibbonRow').style.display = item.featuredMain ? '' : 'none';
+      document.getElementById('ciRibbon').value = item.ribbon || '';
+      document.getElementById('ciDesc').value  = item.description || '';
+      document.getElementById('ciSchedule').value = (item.schedule || []).join('\n');
+      document.getElementById('ciPrice').value = item.price || '';
+      document.getElementById('ciFormTitle').textContent = '수업 카드 수정';
+      document.getElementById('saveCiBtn').textContent = '수정 저장';
+      document.getElementById('cancelCiBtn').style.display = '';
+      window.scrollTo({ top: document.getElementById('tabClassInfo').getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' });
+    }
+
+    async function onDeleteCi(id, title) {
+      if (!confirm(`"${title}" 수업 카드를 삭제하시겠습니까?`)) return;
+      await deleteClassInfo(id);
+      showToast('삭제되었습니다');
+      loadClassInfoAdmin();
+    }
+
+    document.getElementById('cancelCiBtn').addEventListener('click', resetCiForm);
+
+    document.getElementById('saveCiBtn').addEventListener('click', async () => {
+      const id = document.getElementById('ciEditId').value.trim();
+      const featuredVal = document.getElementById('ciFeatured').value;
+      const data = {
+        title:       document.getElementById('ciTitle').value.trim(),
+        emoji:       document.getElementById('ciEmoji').value.trim(),
+        badge:       document.getElementById('ciBadge').value.trim(),
+        age:         document.getElementById('ciAge').value.trim(),
+        filterCat:   document.getElementById('ciFilterCat').value,
+        colorTheme:  document.getElementById('ciColor').value,
+        featured:    featuredVal === 'featured',
+        featuredMain: featuredVal === 'featuredMain',
+        ribbon:      document.getElementById('ciRibbon').value.trim(),
+        description: document.getElementById('ciDesc').value.trim(),
+        schedule:    document.getElementById('ciSchedule').value.split('\n').map(s => s.trim()).filter(Boolean),
+        price:       document.getElementById('ciPrice').value.trim(),
+      };
+      if (!data.title) { showToast('수업 이름을 입력해주세요'); return; }
+      const btn = document.getElementById('saveCiBtn');
+      btn.disabled = true;
+      try {
+        if (id) { await updateClassInfo(id, data); showToast('수정되었습니다'); }
+        else    { await addClassInfo(data);         showToast('추가되었습니다'); }
+        resetCiForm();
+        loadClassInfoAdmin();
+      } catch(e) { showToast('저장 실패: ' + e.message); }
+      btn.disabled = false;
+    });
+
+    // 초기 로드
+    loadUsers();
+    loadCodes();
+  </script>
+</body>
+</html>

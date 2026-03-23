@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>라라댄스무용학원 | LaLa Barre &amp; Ballet Studio</title>
+  <meta name="description" content="부산 남구 대연동 라라댄스무용학원 - 발레, 현대무용 전문학원. 유아부터 성인까지 체계적인 커리큘럼. 입시 합격률 99%." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Noto+Sans+KR:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&family=Jua&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- NAV -->
+  <header class="navbar" id="navbar">
+    <div class="nav-inner">
+      <a href="#home" class="nav-logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 200 200" width="60" height="60" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Classy Gold Ring instead of Insta Rainbow -->
+            <circle cx="100" cy="100" r="95" fill="#ffffff" stroke="#b89c6b" stroke-width="4"/>
+            
+            <!-- Inner Dancer Silhouette (Brown: #825b3a) -->
+            <g fill="#825b3a" stroke="#825b3a" stroke-linecap="round">
+              <!-- Diagonal Leg Line -->
+              <path d="M 45 65 L 140 120" stroke-width="6"/>
+              <path d="M 120 108 L 165 135" stroke-width="3"/>
+              <!-- Tutu/Skirt Detail -->
+              <path d="M 95 95 C 105 110 120 115 125 105 C 115 100 105 92 95 95 Z" stroke="none"/>
+              <!-- Body Arched -->
+              <path d="M 103 98 C 110 80 120 65 116 55 C 112 60 102 75 95 92 Z" stroke="none"/>
+              <path d="M 115 57 C 120 65 125 75 122 85" stroke-width="4" stroke="none"/>
+              <!-- Arms Sweeping Left -->
+              <path d="M 116 55 Q 95 45 78 40" stroke-width="2.5" fill="none"/>
+              <path d="M 115 55 Q 105 40 100 22" stroke-width="2" fill="none"/>
+              <!-- Head -->
+              <ellipse cx="122" cy="48" rx="7" ry="5.5" transform="rotate(-30 122 48)" stroke="none"/>
+            </g>
+            
+            <!-- Text inside the logo -->
+            <text x="100" y="148" font-family="'Cormorant Garamond', serif" font-size="28" font-weight="600" fill="#825b3a" text-anchor="middle" letter-spacing="0.1em">L A L A</text>
+            <text x="100" y="165" font-family="'DM Sans', sans-serif" font-size="11" font-weight="500" fill="#825b3a" text-anchor="middle" letter-spacing="0.05em">DANCE STUDIO</text>
+          </svg>
+        </div>
+        <div class="logo-text">
+          <span class="logo-main custom-kr">라라댄스&amp;무용학원</span>
+          <span class="logo-sub custom-en">L a L a &nbsp; D a n c e &nbsp; S t u d i o</span>
+        </div>
+      </a>
+      <button class="hamburger" id="hamburger" aria-label="메뉴 열기">
+        <span></span><span></span><span></span>
+      </button>
+      <nav class="nav-menu" id="navMenu">
+        <a href="#about">학원소개</a>
+        <a href="#classes">수업안내</a>
+        <a href="#schedule">시간표</a>
+        <a href="#news">소식</a>
+        <a href="#contact" class="nav-cta">오시는길</a>
+        <a href="predict/login.html" class="nav-admin-link">출석관리시스템</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <div class="hero-bg-shapes">
+      <div class="shape shape-1"></div>
+      <div class="shape shape-2"></div>
+      <div class="shape shape-3"></div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-eyebrow">
+        <span class="eyebrow-line"></span>
+        <span>BUSAN · DAEYEON-DONG · EST. 2017</span>
+        <span class="eyebrow-line"></span>
+      </div>
+      <h1 class="hero-title">
+        <em>LaLa</em>
+        <span>Barre &amp; Ballet</span>
+        <span class="hero-title-kr">라라댄스무용학원</span>
+      </h1>
+      <p class="hero-motto">
+        춤을 통해 세상을 바라보는 눈이 바뀌고<br/>
+        아름다운 사람으로 성장할 수 있기를 바랍니다.
+      </p>
+      <div class="hero-actions">
+        <a href="#classes" class="btn btn-dark">수업 알아보기 <span>→</span></a>
+        <a href="tel:0516114607" class="btn btn-outline-dark">📞 051-611-4607</a>
+      </div>
+      <div class="hero-tags">
+        <span>🩰 발레</span>
+        <span>💃 현대무용</span>
+        <span>🏆 무용입시</span>
+        <span>🌸 성인발레</span>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-circle-outer">
+        <div class="hero-circle-inner">
+          <svg viewBox="0 0 340 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Large elegant ballet silhouette -->
+            <g opacity="0.18" fill="#b89c6b">
+              <circle cx="170" cy="65" r="35"/>
+              <ellipse cx="168" cy="170" rx="28" ry="65" transform="rotate(-3 168 170)"/>
+              <!-- tutu -->
+              <ellipse cx="168" cy="230" rx="80" ry="28" opacity="0.7"/>
+              <path d="M145 235 Q120 270 100 320 Q90 360 95 400" stroke="#b89c6b" stroke-width="14" stroke-linecap="round" fill="none"/>
+              <path d="M190 238 Q230 255 270 240" stroke="#b89c6b" stroke-width="14" stroke-linecap="round" fill="none"/>
+              <!-- arms -->
+              <path d="M148 120 Q100 90 65 70" stroke="#b89c6b" stroke-width="10" stroke-linecap="round" fill="none"/>
+              <path d="M188 118 Q235 95 272 78" stroke="#b89c6b" stroke-width="10" stroke-linecap="round" fill="none"/>
+            </g>
+            <!-- decorative circles -->
+            <circle cx="170" cy="250" r="160" stroke="#e8c4a0" stroke-width="0.5" stroke-dasharray="6 8" opacity="0.4"/>
+            <circle cx="170" cy="250" r="140" stroke="#d4b08a" stroke-width="0.3" opacity="0.2"/>
+          </svg>
+        </div>
+      </div>
+
+    </div>
+    <div class="hero-scroll">
+      <div class="scroll-mouse"><div class="scroll-wheel"></div></div>
+      <span>scroll</span>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section class="stats">
+    <div class="stats-inner">
+      <div class="stat">
+        <strong class="count" data-target="99">0</strong><sup>%</sup>
+        <p>무용입시 합격률</p>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <strong class="count" data-target="7">0</strong><sup>년+</sup>
+        <p>전문 운영 경력</p>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <strong class="count" data-target="100">0</strong><sup>명+</sup>
+        <p>현재 등록 인원</p>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <strong class="count" data-target="6">0</strong><sup>개</sup>
+        <p>전문 과정</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="about" id="about">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-image-col">
+          <div class="about-img-frame">
+            <div class="about-img-bg">
+              <svg viewBox="0 0 400 480" fill="none" xmlns="http://www.w3.org/2000/svg" class="about-svg">
+                <!-- Studio illustration -->
+                <rect width="400" height="480" rx="20" fill="#fdf9f5"/>
+                <!-- Barre -->
+                <rect x="30" y="240" width="340" height="6" rx="3" fill="#d4b896" opacity="0.6"/>
+                <rect x="60" y="200" width="8" height="46" rx="4" fill="#d4b896" opacity="0.4"/>
+                <rect x="332" y="200" width="8" height="46" rx="4" fill="#d4b896" opacity="0.4"/>
+                <!-- Mirror reflection lines -->
+                <line x1="200" y1="30" x2="200" y2="240" stroke="#e8ddd4" stroke-width="1" stroke-dasharray="4 6"/>
+                <line x1="100" y1="30" x2="100" y2="240" stroke="#e8ddd4" stroke-width="0.5" stroke-dasharray="2 8" opacity="0.5"/>
+                <line x1="300" y1="30" x2="300" y2="240" stroke="#e8ddd4" stroke-width="0.5" stroke-dasharray="2 8" opacity="0.5"/>
+                <!-- Floor -->
+                <rect x="0" y="400" width="400" height="80" rx="0" fill="#f0e8de" opacity="0.5"/>
+                <!-- Dancer silhouette center -->
+                <g opacity="0.22" fill="#b89c6b">
+                  <circle cx="200" cy="90" r="22"/>
+                  <ellipse cx="198" cy="155" rx="17" ry="42" transform="rotate(-2 198 155)"/>
+                  <ellipse cx="198" cy="195" rx="52" ry="18" opacity="0.6"/>
+                  <path d="M182 200 Q165 235 155 280" stroke="#b89c6b" stroke-width="10" stroke-linecap="round" fill="none"/>
+                  <path d="M214 202 Q248 218 272 208" stroke="#b89c6b" stroke-width="10" stroke-linecap="round" fill="none"/>
+                  <path d="M184 116 Q150 100 126 88" stroke="#b89c6b" stroke-width="7" stroke-linecap="round" fill="none"/>
+                  <path d="M216 114 Q252 100 278 88" stroke="#b89c6b" stroke-width="7" stroke-linecap="round" fill="none"/>
+                </g>
+                <!-- Studio text watermark -->
+                <text x="200" y="440" text-anchor="middle" font-family="serif" font-size="14" fill="#c4aa88" opacity="0.5" letter-spacing="6">LaLa DANCE STUDIO</text>
+              </svg>
+            </div>
+            <div class="about-cert">
+              <div class="cert-line">남부교육지원청 인가</div>
+              <div class="cert-num">제 4567호</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="about-text-col">
+          <div class="section-eyebrow">ABOUT US</div>
+          <h2 class="section-heading">학원 소개</h2>
+          <div class="director-tag">
+            <span class="dir-label">원장</span>
+            <span class="dir-name">허유라</span>
+          </div>
+          <blockquote class="about-quote">
+            "춤을 통해 세상을 바라보는 눈이 바뀌고,<br/>
+            아름다운 사람으로 성장할 수 있기를 바랍니다."
+          </blockquote>
+          <p class="about-desc">
+            라라댄스무용학원은 2017년 10월 부산 남구 대연동에 설립된 발레·현대무용 전문학원입니다. 유아부터 입시생, 성인까지 각 연령과 수준에 맞는 체계적인 커리큘럼을 통해 <strong>아이들의 잠재적인 재능과 올바른 자세, 유연성, 창의성</strong>을 이끌어냅니다.
+          </p>
+          <div class="about-highlights">
+            <div class="highlight-item">
+              <div class="hi-icon">🏆</div>
+              <div class="hi-text">
+                <strong>입시 합격률 99%</strong>
+                <p>중·고·대학교 무용 입시 전문 지도</p>
+              </div>
+            </div>
+            <div class="highlight-item">
+              <div class="hi-icon">👨‍🏫</div>
+              <div class="hi-text">
+                <strong>특별 강사 초청 수업</strong>
+                <p>김세용(발레), 이용진(현대무용) 등 전문가 특강</p>
+              </div>
+            </div>
+            <div class="highlight-item">
+              <div class="hi-icon">✨</div>
+              <div class="hi-text">
+                <strong>정기 공연 &amp; 대회 참가</strong>
+                <p>제10회 전국 무용 예술제 다수 수상</p>
+              </div>
+            </div>
+            <div class="highlight-item">
+              <div class="hi-icon">🎓</div>
+              <div class="hi-text">
+                <strong>예술고등학교 합격</strong>
+                <p>고양예술고등학교 등 명문 예고 합격 배출</p>
+              </div>
+            </div>
+          </div>
+          <div class="about-info-row">
+            <div class="ai-box">
+              <span>설립일</span>
+              <strong>2017. 10. 16</strong>
+            </div>
+            <div class="ai-box">
+              <span>현재 등록 인원</span>
+              <strong>100+명</strong>
+            </div>
+            <div class="ai-box">
+              <span>등록번호</span>
+              <strong>제 4567호</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CLASSES -->
+  <section class="classes" id="classes">
+    <div class="container">
+      <div class="section-eyebrow">CURRICULUM</div>
+      <h2 class="section-heading">수업 안내</h2>
+      <p class="section-sub">유아 발레부터 무용 입시반, 성인 발레까지 전문 과정</p>
+
+      <div class="class-tabs" role="tablist">
+        <button class="ctab active" data-filter="all" role="tab">전체</button>
+        <button class="ctab" data-filter="kids" role="tab">어린이</button>
+        <button class="ctab" data-filter="teens" role="tab">입시반</button>
+        <button class="ctab" data-filter="adult" role="tab">성인</button>
+      </div>
+
+      <div class="class-grid" id="classInfoGrid">
+        <div style="grid-column:1/-1;text-align:center;padding:48px;color:#999;font-size:.9rem">불러오는 중...</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCHEDULE -->
+  <section class="schedule" id="schedule">
+    <div class="container">
+      <div class="section-eyebrow">TIMETABLE</div>
+      <h2 class="section-heading">주간 시간표</h2>
+      <div class="schedule-scroll">
+        <table class="sch-table">
+          <thead>
+            <tr>
+              <th class="sch-time-head">시간</th>
+              <th>월</th>
+              <th>화</th>
+              <th>수</th>
+              <th>목</th>
+              <th>금</th>
+              <th>토</th>
+            </tr>
+          </thead>
+          <tbody id="scheduleTbody">
+            <tr><td colspan="7" style="text-align:center;padding:20px;color:#999;font-size:.9rem">불러오는 중...</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="sch-legend">
+        <span class="leg kids">유아 발레</span>
+        <span class="leg elem">초등 발레</span>
+        <span class="leg modern">현대무용</span>
+        <span class="leg entrance">입시반</span>
+        <span class="leg adult">성인 발레</span>
+      </div>
+      <p class="sch-note">※ 시간표는 학원 사정에 따라 변경될 수 있습니다. 자세한 내용은 학원으로 문의해 주세요.</p>
+    </div>
+  </section>
+
+  <!-- NEWS / ACHIEVEMENTS -->
+  <section class="news" id="news">
+    <div class="container">
+      <div class="section-eyebrow">ACHIEVEMENTS</div>
+      <h2 class="section-heading">소식 &amp; 수상 내역</h2>
+      <div class="news-grid" id="newsGrid">
+        <div style="grid-column:1/-1;text-align:center;padding:32px;color:#999;font-size:.9rem">불러오는 중...</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="contact" id="contact">
+    <div class="container">
+      <div class="contact-grid">
+        <div class="contact-left">
+          <div class="section-eyebrow">LOCATION &amp; CONTACT</div>
+          <h2 class="section-heading">오시는 길</h2>
+          <div class="contact-items">
+            <div class="ci">
+              <div class="ci-icon">📍</div>
+              <div>
+                <strong>주소</strong>
+                <p>부산광역시 남구 수영로 222, 3층<br/><small>(대연동, 지하철 2호선 대연역 근처)</small></p>
+              </div>
+            </div>
+            <div class="ci">
+              <div class="ci-icon">📞</div>
+              <div>
+                <strong>전화 문의</strong>
+                <p><a href="tel:0516114607">051-611-4607</a></p>
+              </div>
+            </div>
+            <div class="ci">
+              <div class="ci-icon">💬</div>
+              <div>
+                <strong>카카오톡 ID</strong>
+                <p>yoratalk</p>
+              </div>
+            </div>
+            <div class="ci">
+              <div class="ci-icon">📸</div>
+              <div>
+                <strong>인스타그램</strong>
+                <p><a href="https://www.instagram.com/laladance.studio" target="_blank" rel="noopener">@laladance.studio</a></p>
+              </div>
+            </div>
+            <div class="ci">
+              <div class="ci-icon">🕐</div>
+              <div>
+                <strong>운영 시간</strong>
+                <p>평일 10:00 – 22:00<br/>토요일 10:00 – 13:00<br/>일요일·공휴일 휴무</p>
+              </div>
+            </div>
+          </div>
+          <div class="contact-btns">
+            <a href="tel:0516114607" class="btn btn-dark">📞 전화 문의</a>
+            <a href="https://www.instagram.com/laladance.studio" target="_blank" rel="noopener" class="btn btn-outline-dark">📸 인스타그램</a>
+          </div>
+        </div>
+        <div class="contact-right">
+          <div class="map-box">
+            <div class="map-grid-overlay"></div>
+            <div class="map-card">
+              <div class="map-pin-wrap">
+                <div class="mpin"></div>
+                <div class="mpin-ring"></div>
+                <div class="mpin-ring2"></div>
+              </div>
+              <div class="map-info">
+                <strong>라라댄스무용학원</strong>
+                <span>LaLa Barre &amp; Ballet Studio</span>
+                <p>부산 남구 수영로 222, 3층<br/>📮 대연동</p>
+                <a href="https://map.naver.com/p/search/부산+남구+수영로+222+라라댄스" target="_blank" rel="noopener" class="map-btn">네이버 지도로 보기 →</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-top">
+      <div class="ft-logo">
+        <div class="ft-logo-icon">
+          <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="20" cy="20" r="19" stroke="#b89c6b" stroke-width="1"/>
+            <circle cx="20" cy="10" r="4" fill="#b89c6b"/>
+            <path d="M20 14 Q18 20 17 25" stroke="#b89c6b" stroke-width="2" stroke-linecap="round" fill="none"/>
+            <path d="M15 17 Q10 14 7 12" stroke="#b89c6b" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+            <path d="M25 17 Q30 14 33 12" stroke="#b89c6b" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+            <path d="M17 26 Q20 29 30 26" stroke="#b89c6b" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          </svg>
+        </div>
+        <div>
+          <span class="ft-main">라라댄스무용학원</span>
+          <span class="ft-sub">LaLa Barre &amp; Ballet Studio</span>
+        </div>
+      </div>
+      <div class="ft-info">
+        <p>📍 부산광역시 남구 수영로 222, 3층 (대연동)</p>
+        <p>📞 051-611-4607 &nbsp;|&nbsp; 💬 카카오톡: yoratalk</p>
+        <p>📸 Instagram: @laladance.studio</p>
+        <p>🏛 부산광역시 남부교육지원청 제 4567호 &nbsp;|&nbsp; 원장: 허유라</p>
+      </div>
+      <div class="ft-sns">
+        <a href="https://www.instagram.com/laladance.studio" target="_blank" rel="noopener" aria-label="Instagram">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+        </a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2024 라라댄스무용학원. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="main.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script>
+    if (!firebase.apps.length) firebase.initializeApp({
+      apiKey: "AIzaSyCCzceJKVQaGEb8HlrM9u9W51hMZ6EsOpM",
+      authDomain: "laladance-512b2.firebaseapp.com",
+      projectId: "laladance-512b2",
+      storageBucket: "laladance-512b2.firebasestorage.app",
+      messagingSenderId: "431031625640",
+      appId: "1:431031625640:web:04e4d9f89fcd1964879f9d"
+    });
+    const _db = firebase.firestore();
+  </script>
+  <script>
+    // ===== 메인 화면 동적 데이터 =====
+    const CAT_SCH = { kids:'s-kids', elem:'s-elem', modern:'s-modern', entrance:'s-entrance', adult:'s-adult' };
+
+    // 시간표: 카테고리 클래스를 <td>에 직접 적용해 원래 디자인 복원
+    function buildScheduleTable(classes) {
+      const DAYS = [1,2,3,4,5,6];
+      const timeMap = {};
+      classes.forEach(cls => {
+        if (!timeMap[cls.time]) timeMap[cls.time] = {};
+        cls.days.forEach(d => {
+          if (!timeMap[cls.time][d]) timeMap[cls.time][d] = [];
+          timeMap[cls.time][d].push(cls);
+        });
+      });
+      const times = Object.keys(timeMap).sort();
+      if (!times.length) return '<tr><td colspan="7" style="text-align:center;padding:20px;color:#999">등록된 수업이 없습니다</td></tr>';
+      return times.map(t => {
+        const cells = DAYS.map(d => {
+          const list = timeMap[t][d] || [];
+          if (!list.length) return '<td></td>';
+          if (list.length === 1) {
+            const c = list[0];
+            return `<td class="${CAT_SCH[c.category]||''}">${c.name}</td>`;
+          }
+          return '<td>' + list.map(c =>
+            `<div class="sch-multi ${CAT_SCH[c.category]||''}">${c.name}</div>`
+          ).join('') + '</td>';
+        }).join('');
+        return `<tr><td class="sch-time">${t}</td>${cells}</tr>`;
+      }).join('');
+    }
+
+    // 수업안내 카드 생성
+    function buildClassCard(item) {
+      const cls = item.featuredMain ? 'ccard featured-main' : item.featured ? 'ccard featured' : 'ccard';
+      const ribbon = item.ribbon ? `<div class="ccard-ribbon">${item.ribbon}</div>` : '';
+      const schedItems = (item.schedule || []).map(s => {
+        const sep = s.indexOf('|');
+        if (sep === -1) return `<li>${s}</li>`;
+        return `<li><span>${s.slice(0,sep).trim()}</span>${s.slice(sep+1).trim()}</li>`;
+      }).join('');
+      return `
+        <div class="${cls}" data-cat="${item.filterCat||'all'}">
+          ${ribbon}
+          <div class="ccard-top ${item.colorTheme||'pink'}">
+            <span class="ccard-emoji">${item.emoji||'🩰'}</span>
+            <span class="ccard-badge">${item.badge||''}</span>
+          </div>
+          <div class="ccard-body">
+            <h3>${item.title||''}</h3>
+            <p class="ccard-age">${item.age||''}</p>
+            <p class="ccard-desc">${item.description||''}</p>
+            <ul class="ccard-schedule">${schedItems}</ul>
+            <div class="ccard-price">${item.price||''}</div>
+          </div>
+        </div>`;
+    }
+
+    // 카드 렌더 후 필터탭 + 애니메이션 재초기화
+    function reinitCards() {
+      const tabs  = document.querySelectorAll('.ctab');
+      const cards = document.querySelectorAll('.ccard');
+      tabs.forEach(tab => {
+        tab.onclick = () => {
+          tabs.forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          const filter = tab.dataset.filter;
+          cards.forEach(card => {
+            card.style.display = (filter === 'all' || (card.dataset.cat||'').includes(filter)) ? '' : 'none';
+          });
+        };
+      });
+      const obs = new IntersectionObserver(entries => {
+        entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+      }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+      cards.forEach((el, i) => {
+        el.classList.add('reveal');
+        el.style.transitionDelay = `${(i % 4) * 0.08}s`;
+        obs.observe(el);
+        el.addEventListener('mousemove', e => {
+          const r = el.getBoundingClientRect();
+          el.style.transform = `translateY(-6px) rotateX(${-((e.clientY-r.top-r.height/2)/r.height)*4}deg) rotateY(${((e.clientX-r.left-r.width/2)/r.width)*4}deg)`;
+        });
+        el.addEventListener('mouseleave', () => { el.style.transform = ''; });
+      });
+    }
+
+    function buildNewsGrid(news) {
+      if (!news.length) return '<div style="grid-column:1/-1;text-align:center;padding:32px;color:#999">소식이 없습니다</div>';
+      return news.map(n => `
+        <div class="news-card">
+          <div class="news-date">${n.date||''}</div>
+          <div class="nc-icon">${n.icon||'📌'}</div>
+          <h4>${n.title||''}</h4>
+          <p>${n.description||''}</p>
+        </div>`).join('');
+    }
+
+    (async function() {
+      try {
+        const [clsSnap, newsSnap, ciSnap] = await Promise.all([
+          _db.collection('classes').get(),
+          _db.collection('news').get(),
+          _db.collection('classinfo').get()
+        ]);
+        const classes  = clsSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+        const news     = newsSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+        const classinfo = ciSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+        const tbody = document.getElementById('scheduleTbody');
+        if (tbody) tbody.innerHTML = buildScheduleTable(classes);
+        const newsGrid = document.getElementById('newsGrid');
+        if (newsGrid) newsGrid.innerHTML = buildNewsGrid(news);
+        const ciGrid = document.getElementById('classInfoGrid');
+        if (ciGrid) {
+          ciGrid.innerHTML = classinfo.length
+            ? classinfo.map(buildClassCard).join('')
+            : '<div style="grid-column:1/-1;text-align:center;padding:48px;color:#999">등록된 수업이 없습니다</div>';
+          reinitCards();
+        }
+      } catch(e) {
+        const tbody = document.getElementById('scheduleTbody');
+        if (tbody) tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:#999">시간표를 불러올 수 없습니다</td></tr>';
+      }
+    })();
+  </script>
+</body>
+</html>
