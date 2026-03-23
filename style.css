@@ -1050,6 +1050,8 @@ ul { list-style: none; }
   .nav-inner { padding: 0 20px; }
   /* 모바일에서 navbar 항상 배경 표시 (햄버거 버튼 가독성) */
   .navbar { background: #fdfbf8; box-shadow: 0 1px 8px rgba(58,51,48,0.08); }
+  /* backdrop-filter 제거: 모바일에서 fixed 자식(.nav-menu)의 containing block이 navbar로 제한되는 버그 방지 */
+  .navbar.scrolled { backdrop-filter: none; -webkit-backdrop-filter: none; }
   .nav-menu {
     display: none;
     flex-direction: column;
