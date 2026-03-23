@@ -69,8 +69,9 @@ service cloud.firestore {
     }
 
     // ── 설정 (학원코드, 활성수업 등) ──────────────
+    // codes 문서는 가입 시 미인증 상태에서도 읽어야 하므로 공개 허용
     match /settings/{id} {
-      allow read:  if isAuth();
+      allow read:  if id == 'codes' || isAuth();
       allow write: if isAdmin();
     }
   }

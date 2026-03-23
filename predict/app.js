@@ -149,8 +149,12 @@ async function login(email, password) {
 
 async function signup(name, email, password, role, code) {
   try {
-    const codesDoc = await db.collection('settings').doc('codes').get();
-    const codes = codesDoc.exists ? codesDoc.data() : { student: 'LALA2024', teacher: 'TEACHER2024' };
+    // settings/codes는 미인증 상태에서 읽기 실패 가능 → 실패 시 기본값 사용
+    let codes = { student: 'LALA2024', teacher: 'TEACHER2024' };
+    try {
+      const codesDoc = await db.collection('settings').doc('codes').get();
+      if (codesDoc.exists) codes = codesDoc.data();
+    } catch { /* 미인증 상태 — 기본 코드로 검증 */ }
     if (code !== codes[role]) return { ok: false, msg: '학원 코드가 올바르지 않습니다. 선생님께 문의하세요.' };
 
     const fbEmail = toFirebaseEmail(email);
