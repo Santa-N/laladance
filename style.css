@@ -1048,16 +1048,17 @@ ul { list-style: none; }
   .container { padding: 0 20px; }
   :root { --section-pad: 64px 0; }
   .nav-inner { padding: 0 20px; }
+  /* 모바일에서 navbar 항상 배경 표시 (햄버거 버튼 가독성) */
+  .navbar { background: #fdfbf8; box-shadow: 0 1px 8px rgba(58,51,48,0.08); }
   .nav-menu {
     display: none;
     flex-direction: column;
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(253,251,248,0.98);
-    backdrop-filter: blur(20px);
+    background: #fdfbf8;
     padding: 80px 40px 40px;
     gap: 0;
-    z-index: 999;
+    z-index: 1001;
   }
   .nav-menu.open { display: flex; }
   .nav-menu a {
@@ -1067,7 +1068,7 @@ ul { list-style: none; }
     color: var(--text-dark) !important;
   }
   .nav-cta { margin-top: 24px; text-align: center; border-radius: 50px !important; }
-  .hamburger { display: flex; z-index: 1000; position: relative; }
+  .hamburger { display: flex; z-index: 1002; position: relative; }
   .class-grid { grid-template-columns: 1fr; }
   .price-grid { grid-template-columns: 1fr; }
   .news-grid { grid-template-columns: 1fr; }
