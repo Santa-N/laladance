@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
   <title>출석 대시보드 | 라라댄스</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -347,9 +349,9 @@
       const header = `
         <div class="class-card-top">
           <div class="class-card-info">
-            <span class="class-card-emoji">${cls.emoji}</span>
-            <div class="class-card-name">${cls.name}</div>
-            <div class="class-card-time">${cls.time}</div>
+            <span class="class-card-emoji">${esc(cls.emoji)}</span>
+            <div class="class-card-name">${esc(cls.name)}</div>
+            <div class="class-card-time">${esc(cls.time)}</div>
           </div>
           <span class="class-cat-badge" style="background:${catColor}">${CAT_LABELS[cls.category]}</span>
         </div>`;
@@ -360,9 +362,9 @@
           ? enrolledStudents.map(s => {
               const attended = classCheckins.some(c => c.userId === s.id);
               return `<div class="enrolled-row ${attended ? 'row-on' : 'row-off'}"
-                           onclick="teacherToggle('${cls.id}','${todayISO}','${s.id}','${s.name}')">
+                           onclick="teacherToggle('${cls.id}','${todayISO}','${s.id}')">
                 <span class="enr-icon">${attended ? '✅' : '❌'}</span>
-                <span class="enr-name">${s.name}</span>
+                <span class="enr-name">${esc(s.name)}</span>
                 <span class="enr-btn">${attended ? '출석 취소' : '출석 처리'}</span>
               </div>`;
             }).join('')
@@ -507,8 +509,12 @@
     }
 
     // ===== 선생님 출석 토글 =====
-    async function teacherToggle(classId, date, userId, userName) {
+    async function teacherToggle(classId, date, userId) {
       try {
+        // 학생 이름을 enrolled 캐시에서 조회 (onclick 속성에 노출 방지)
+        const allEnrolled = Object.values({ ...enrolledByClass, ...tcalEnrolledByClass }).flat();
+        const student = allEnrolled.find(s => s.id === userId);
+        const userName = student ? student.name : '';
         await toggleCheckin(classId, date, userId, userName);
         if (date === todayISO) await render();
         else await buildTeacherCal(teacherWeekClasses);
@@ -517,10 +523,11 @@
     }
 
     // ===== 선생님 달력 =====
-    let teacherWeekClasses = [];
-    let tcalMonthCheckins  = [];
+    let teacherWeekClasses  = [];
+    let tcalMonthCheckins   = [];
     let tcalEnrolledByClass = {};
-    let tcalSelectedDate   = null;
+    let tcalSelectedDate    = null;
+    let enrolledByClass     = {}; // teacherToggle에서 접근 가능하도록 모듈 레벨 선언
     let tcalYear  = new Date().getFullYear();
     let tcalMonth = new Date().getMonth();
 
@@ -641,9 +648,9 @@
               const attended = clsCheckins.some(c => c.userId === s.id);
               const canToggle = isPast;
               return `<div class="tcal-student-row ${attended ? 'row-on' : 'row-off'}"
-                           ${canToggle ? `onclick="teacherToggle('${cls.id}','${dateStr}','${s.id}','${s.name}')"` : ''}>
+                           ${canToggle ? `onclick="teacherToggle('${cls.id}','${dateStr}','${s.id}')"` : ''}>
                 <span class="enr-icon">${attended ? '✅' : '❌'}</span>
-                <span class="enr-name">${s.name}</span>
+                <span class="enr-name">${esc(s.name)}</span>
                 <span class="enr-btn">${canToggle ? (attended ? '출석 취소' : '출석 처리') : ''}</span>
               </div>`;
             }).join('')
@@ -651,7 +658,7 @@
 
         html += `<div class="tcal-class-block">
           <div class="tcal-class-name">
-            <span>${cls.emoji}</span><span>${cls.name}</span>
+            <span>${esc(cls.emoji)}</span><span>${esc(cls.name)}</span>
             <span style="font-size:.75rem;color:var(--text-light)">${cls.time}</span>
             <span class="enroll-badge ${attendedCnt>=MIN_STUDENTS?'enroll-today':'enroll-today-wait'}" style="margin-left:auto">${attendedCnt}명 출석</span>
           </div>
@@ -672,7 +679,8 @@
           isTeacher ? fetchActiveClassIds() : Promise.resolve(null),
           isTeacher ? fetchUserStats() : Promise.resolve(null),
         ]);
-        let classes, enrollmentCounts = null, enrolledByClass = {};
+        let classes, enrollmentCounts = null;
+        enrolledByClass = {};
         if (isTeacher) [enrollmentCounts, enrolledByClass] = await Promise.all([fetchEnrollmentCounts(), fetchEnrolledByClass()]);
 
         if (isTeacher) {

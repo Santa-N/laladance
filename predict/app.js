@@ -64,6 +64,37 @@ function formatDateKR(dateStr) {
 }
 function todayStr() { return new Date().toISOString().split('T')[0]; }
 
+// ===== XSS 방지 — 모든 innerHTML 삽입 시 사용 =====
+function esc(str) {
+  return String(str ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+// ===== 로그인 시도 제한 (5회 실패 → 15분 잠금) =====
+function _loginLocked() {
+  const t = +localStorage.getItem('lala_lockout_until');
+  if (t && Date.now() < t) return Math.ceil((t - Date.now()) / 60000);
+  if (t) { localStorage.removeItem('lala_lockout_until'); localStorage.removeItem('lala_login_fails'); }
+  return 0;
+}
+function _recordFail() {
+  const n = (+localStorage.getItem('lala_login_fails') || 0) + 1;
+  if (n >= 5) {
+    localStorage.setItem('lala_lockout_until', Date.now() + 15 * 60000);
+    localStorage.removeItem('lala_login_fails');
+  } else {
+    localStorage.setItem('lala_login_fails', n);
+  }
+}
+function _clearFails() {
+  localStorage.removeItem('lala_login_fails');
+  localStorage.removeItem('lala_lockout_until');
+}
+
 // @ 없는 아이디 → Firebase Auth용 이메일 변환
 function toFirebaseEmail(input) {
   return (input || '').includes('@') ? input : input + '@laradance.local';
@@ -84,12 +115,16 @@ function requireAuth() {
 
 // ===== 인증 =====
 async function login(email, password) {
+  const remaining = _loginLocked();
+  if (remaining) return { ok: false, msg: `로그인이 ${remaining}분간 잠금 상태입니다. 잠시 후 다시 시도해주세요.` };
+
   const fbEmail = toFirebaseEmail(email);
   try {
     const cred = await auth.signInWithEmailAndPassword(fbEmail, password);
     const userDoc = await db.collection('users').doc(cred.user.uid).get();
     if (!userDoc.exists) {
       await auth.signOut();
+      _recordFail();
       return { ok: false, msg: '계정 정보를 찾을 수 없습니다.' };
     }
     const ud = userDoc.data();
@@ -97,10 +132,12 @@ async function login(email, password) {
       await auth.signOut();
       return { ok: false, msg: '정지된 계정입니다. 학원에 문의하세요.' };
     }
+    _clearFails();
     const user = { id: cred.user.uid, name: ud.name, email: ud.displayEmail || email, role: ud.role };
     setSession(user);
     return { ok: true, user };
   } catch(e) {
+    _recordFail();
     return { ok: false, msg: '아이디 또는 비밀번호가 올바르지 않습니다.' };
   }
 }
@@ -349,6 +386,7 @@ async function deleteClassInfo(id) {
 }
 
 // ===== 초기 데이터 세팅 (최초 1회) =====
+// ensureAdmin() 실행 후 인증 상태에서 호출되어야 함
 async function initDefaultData() {
   if (localStorage.getItem('lala_data_init_v1')) return;
   try {
@@ -378,9 +416,14 @@ async function initDefaultData() {
     await batch.commit();
     localStorage.setItem('lala_data_init_v1', '1');
   } catch(e) { /* 권한 문제 등 - 무시 */ }
+  finally {
+    // ensureAdmin()에서 로그아웃하지 않았으므로 여기서 처리
+    try { await auth.signOut(); } catch {}
+  }
 }
 
 // ===== 관리자 계정 초기화 (로그인 페이지에서만 호출) =====
+// 주의: signOut은 하지 않음 — initDefaultData()가 인증 상태에서 실행되어야 하므로
 async function ensureAdmin() {
   if (localStorage.getItem('lala_admin_init_v1')) return;
   localStorage.setItem('lala_admin_init_v1', '1');
@@ -390,8 +433,8 @@ async function ensureAdmin() {
       name: '라라댄스', displayEmail: 'laladance',
       role: 'admin', suspended: false, createdAt: new Date().toISOString()
     });
-    await auth.signOut();
+    // signOut 생략 — initDefaultData() 완료 후 처리
   } catch(e) {
-    try { await auth.signOut(); } catch {}
+    // 이미 계정이 존재하는 경우 정상 (재실행 방지 플래그가 있어야 하나 없을 경우 대비)
   }
 }

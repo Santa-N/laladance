@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
   <title>관리자 페이지 | 라라댄스</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -316,11 +318,11 @@
             u.suspended
               ? `<button class="btn-action btn-unsuspend" onclick="onUnsuspend('${u.id}')">정지 해제</button>`
               : `<button class="btn-action btn-suspend"   onclick="onSuspend('${u.id}')">정지</button>`;
-          const deleteBtn = isAdmin ? '' : `<button class="btn-action btn-del" onclick="onDelete('${u.id}','${u.name}')">삭제</button>`;
+          const deleteBtn = isAdmin ? '' : `<button class="btn-action btn-del" onclick="onDelete('${u.id}')">삭제</button>`;
           return `<tr>
-            <td style="font-weight:600;color:var(--text-dark)">${u.name}</td>
-            <td style="color:var(--text-mid)">${u.email}</td>
-            <td><span class="role-chip ${ROLE_CLASSES[u.role]||''}">${ROLE_LABELS[u.role]||u.role}</span></td>
+            <td style="font-weight:600;color:var(--text-dark)">${esc(u.name)}</td>
+            <td style="color:var(--text-mid)">${esc(u.email)}</td>
+            <td><span class="role-chip ${ROLE_CLASSES[u.role]||''}">${ROLE_LABELS[u.role]||esc(u.role)}</span></td>
             <td><span class="status-chip ${u.suspended ? 'status-suspended':'status-active'}">${u.suspended?'정지':'정상'}</span></td>
             <td>${suspendBtn}${deleteBtn}</td>
           </tr>`;
@@ -342,11 +344,13 @@
       showToast('정지가 해제되었습니다');
       loadUsers();
     }
-    async function onDelete(id, name) {
+    async function onDelete(id) {
+      const u = (await fetchAllUsers()).find(x => x.id === id);
+      const name = u ? u.name : '해당';
       if (!confirm(`"${name}" 계정을 삭제하시겠습니까?\n삭제하면 복구할 수 없습니다.`)) return;
       const res = await deleteUser(id);
       if (res.ok) { showToast('계정이 삭제되었습니다'); loadUsers(); }
-      else showToast('삭제 실패: ' + res.msg);
+      else showToast('삭제 실패');
     }
 
     // ===== 학원코드 =====
@@ -394,15 +398,15 @@
       }
       el.innerHTML = newsCache.map(n => `
         <div class="news-admin-item">
-          <div class="news-admin-icon">${n.icon||'📌'}</div>
+          <div class="news-admin-icon">${esc(n.icon||'📌')}</div>
           <div class="news-admin-body">
-            <div class="news-admin-date">${n.date||''}</div>
-            <div class="news-admin-title">${n.title||''}</div>
-            <div class="news-admin-desc">${n.description||''}</div>
+            <div class="news-admin-date">${esc(n.date||'')}</div>
+            <div class="news-admin-title">${esc(n.title||'')}</div>
+            <div class="news-admin-desc">${esc(n.description||'')}</div>
           </div>
           <div class="news-admin-actions">
             <button class="btn-action btn-suspend" onclick="onEditNews('${n.id}')">수정</button>
-            <button class="btn-action btn-del" onclick="onDeleteNews('${n.id}','${(n.title||'').replace(/'/g,"\\'")}')">삭제</button>
+            <button class="btn-action btn-del" onclick="onDeleteNews('${n.id}')">삭제</button>
           </div>
         </div>`).join('');
     }
@@ -432,7 +436,9 @@
       window.scrollTo({ top: document.getElementById('tabNews').getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' });
     }
 
-    async function onDeleteNews(id, title) {
+    async function onDeleteNews(id) {
+      const n = newsCache.find(x => x.id === id);
+      const title = n ? n.title : '해당';
       if (!confirm(`"${title}" 소식을 삭제하시겠습니까?`)) return;
       await deleteNews(id);
       showToast('삭제되었습니다');
