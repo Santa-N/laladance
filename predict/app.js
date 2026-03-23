@@ -95,9 +95,15 @@ function _clearFails() {
   localStorage.removeItem('lala_lockout_until');
 }
 
-// @ 없는 아이디 → Firebase Auth용 이메일 변환
+// 아이디 → Firebase Auth용 이메일 변환
+// 한글·특수문자 포함 아이디도 허용되도록 base64 인코딩 후 @laradance.local 붙임
 function toFirebaseEmail(input) {
-  return (input || '').includes('@') ? input : input + '@laradance.local';
+  if (!input) return '';
+  if (input.includes('@')) return input; // 이미 이메일 형식이면 그대로
+  // btoa는 ASCII만 지원 → encodeURIComponent로 안전하게 변환 후 base64
+  const safe = btoa(unescape(encodeURIComponent(input.trim().toLowerCase())))
+    .replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
+  return safe + '@laradance.local';
 }
 
 // ===== 세션 =====
@@ -160,7 +166,8 @@ async function signup(name, email, password, role, code) {
   } catch(e) {
     if (e.code === 'auth/email-already-in-use') return { ok: false, msg: '이미 사용 중인 아이디입니다.' };
     if (e.code === 'auth/weak-password')        return { ok: false, msg: '비밀번호는 6자 이상이어야 합니다.' };
-    return { ok: false, msg: '가입 중 오류가 발생했습니다.' };
+    if (e.code === 'auth/invalid-email')        return { ok: false, msg: '아이디 형식이 올바르지 않습니다.' };
+    return { ok: false, msg: '가입 중 오류가 발생했습니다. (' + (e.code || e.message) + ')' };
   }
 }
 
