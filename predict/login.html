@@ -56,6 +56,7 @@
         </div>
         <p class="form-error" id="errorMsg"></p>
         <button type="submit" class="btn-primary btn-gold" id="submitBtn">로그인 →</button>
+        <button type="button" id="unlockBtn" style="display:none;margin-top:10px;width:100%;padding:10px;background:#fff;border:1px solid var(--border);border-radius:8px;color:var(--text-mid);cursor:pointer;font-size:.9rem;">🔓 로그인 잠금 해제</button>
       </form>
       <div class="auth-divider">또는</div>
       <div class="auth-footer">
@@ -73,6 +74,26 @@
     ensureAdmin().then(() => initDefaultData()).catch(console.warn);
 
     if (getSession()) window.location.href = 'dashboard.html';
+
+    // 잠금 상태이면 해제 버튼 표시
+    (function checkLock() {
+      const mins = _loginLocked();
+      if (mins) {
+        document.getElementById('unlockBtn').style.display = 'block';
+        document.getElementById('errorMsg').textContent = `로그인이 ${mins}분간 잠금 상태입니다.`;
+        document.getElementById('errorMsg').classList.add('show');
+      }
+    })();
+
+    document.getElementById('unlockBtn').addEventListener('click', function() {
+      localStorage.removeItem('lala_lockout_until');
+      localStorage.removeItem('lala_login_fails');
+      this.style.display = 'none';
+      const errEl = document.getElementById('errorMsg');
+      errEl.textContent = '잠금이 해제되었습니다.';
+      errEl.style.color = 'green';
+      setTimeout(() => { errEl.classList.remove('show'); errEl.style.color = ''; }, 2000);
+    });
 
     document.getElementById('loginForm').addEventListener('submit', async function(e) {
       e.preventDefault();
