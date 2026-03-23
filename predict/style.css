@@ -600,14 +600,83 @@ select.form-input { cursor: pointer; }
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 640px) {
-  .nav-inner { padding: 0 16px; }
-  .main { padding: 0 16px; }
-  .page-header .container { padding: 0 16px; }
-  .page-title { font-size: 1.5rem; }
-  .auth-card { padding: 32px 24px; }
-  .classes-grid { grid-template-columns: 1fr; }
-  .log-table { font-size: 0.78rem; }
-  .log-table th, .log-table td { padding: 8px 10px; }
+  /* 기본 레이아웃 */
+  .nav-inner { padding: 0 14px; gap: 8px; }
+  .main { padding: 0 14px; }
+  .page-header { padding: 20px 0 16px; }
+  .page-header .container { padding: 0 14px; }
+  .page-title { font-size: 1.4rem; }
+  .page-date { font-size: .82rem; }
+
+  /* 네비게이션 */
+  .nav-logo svg { width: 36px; height: 36px; }
+  .logo-main { font-size: 1rem; }
+  .logo-badge { font-size: .56rem; }
+  .nav-links { gap: 3px; flex-wrap: wrap; justify-content: flex-end; max-width: 60vw; }
+  .nav-links a { font-size: .74rem; padding: 5px 9px; }
   .nav-user { display: none; }
-  .summary-grid { grid-template-columns: repeat(2, 1fr); }
+  .nav-logout { padding: 5px 9px !important; font-size: .72rem !important; }
+
+  /* 탭 — 가로 스크롤 */
+  .view-tabs, .admin-tabs {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 0;
+    padding-right: 8px;
+  }
+  .view-tabs::-webkit-scrollbar, .admin-tabs::-webkit-scrollbar { display: none; }
+  .view-tab, .admin-tab { white-space: nowrap; flex-shrink: 0; padding: 7px 13px 9px; font-size: .8rem; }
+
+  /* 요약 카드 */
+  .summary-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 18px 0; }
+  .summary-card { padding: 14px 16px; gap: 12px; }
+  .summary-icon { width: 38px; height: 38px; font-size: 1.1rem; }
+  .summary-value { font-size: 1.5rem; }
+  .summary-label { font-size: .72rem; }
+
+  /* 수업 카드 */
+  .classes-grid { grid-template-columns: 1fr; gap: 12px; }
+  .class-card-body { padding: 14px 16px; }
+  .class-card-top { padding: 14px 16px 12px; }
+
+  /* 달력 */
+  .tcal-wrap { max-width: 100%; }
+  .tcal-day { font-size: .68rem; padding: 4px 1px 3px; min-height: 34px; }
+  .tcal-day-name { font-size: .62rem; }
+  .tcal-dot { width: 4px; height: 4px; }
+  .tcal-dots { max-width: 26px; gap: 1px; }
+  .cal-header { margin-bottom: 10px; }
+  .cal-day { font-size: .72rem; }
+
+  /* 출석 행 */
+  .enrolled-row { padding: 6px 8px; gap: 8px; }
+  .enr-name { font-size: .84rem; }
+  .enr-btn { font-size: .7rem; }
+  .tcal-student-row { padding: 5px 8px; gap: 8px; }
+
+  /* 과거 기록 */
+  .log-table { font-size: .78rem; }
+  .log-table th, .log-table td { padding: 8px 10px; }
+  .log-date-title { font-size: .82rem; }
+  .log-row { gap: 8px; }
+
+  /* 인증 */
+  .auth-card { padding: 28px 20px; }
+  .auth-title { font-size: 1.5rem; }
+
+  /* 토스트 */
+  .toast { white-space: normal; text-align: center; max-width: calc(100vw - 32px); font-size: .8rem; }
+
+  /* 모달 */
+  .modal { padding: 28px 20px; }
+}
+
+/* 아주 작은 화면 (iPhone SE 등) */
+@media (max-width: 390px) {
+  .nav-links a { font-size: .68rem; padding: 4px 7px; }
+  .logo-main { font-size: .9rem; }
+  .summary-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .summary-card { padding: 12px 12px; gap: 10px; }
+  .view-tab, .admin-tab { font-size: .75rem; padding: 6px 11px 8px; }
 }
